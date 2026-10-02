@@ -1,0 +1,61 @@
+rules_version = '2';
+
+// Ranking do Esquadrão Raiz: qualquer um lê; qualquer um cria uma entrada válida;
+// ninguém edita nem apaga pelo jogo.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /scores/{entryId} {
+      // leitura: documentos avulsos à vontade; consultas só com limite (impede baixar o banco inteiro
+      // de uma vez e protege a cota grátis de leituras)
+      allow get: if true;
+      allow list: if request.query.limit <= 300;
+
+      allow create: if
+        request.resource.data.keys().hasOnly(['team','score','stage','champion','gf','ga','craques','createdAt','seed']) &&
+        request.resource.data.keys().hasAll(['team','score','stage','champion','gf','ga','craques','createdAt']) &&
+
+        request.resource.data.team is string &&
+        request.resource.data.team.size() >= 1 &&
+        request.resource.data.team.size() <= 24 &&
+
+        request.resource.data.stage is int &&
+        request.resource.data.stage >= 0 && request.resource.data.stage <= 60 &&
+        request.resource.data.champion == (request.resource.data.stage >= 4) &&
+
+        // no máximo 1 gol de cada lado por lance: 6 lances por jogo e até (fase + 1) jogos disputados
+        request.resource.data.gf is int && request.resource.data.gf >= 0 &&
+        request.resource.data.gf <= 6 * (request.resource.data.stage + 1) &&
+        request.resource.data.ga is int && request.resource.data.ga >= 0 &&
+        request.resource.data.ga <= 6 * (request.resource.data.stage + 1) &&
+        // cada vitória exige no mínimo empatar o jogo, então não dá para ganhar tomando muito mais gols do que fez
+        request.resource.data.ga <= request.resource.data.gf + 6 &&
+
+        // a pontuação precisa bater com a fórmula do jogo
+        request.resource.data.score is int &&
+        request.resource.data.score == 500 + request.resource.data.stage * 1000
+          + (request.resource.data.gf - request.resource.data.ga) * 10
+          + request.resource.data.gf &&
+
+        request.resource.data.craques is list &&
+        request.resource.data.craques.size() >= 1 && request.resource.data.craques.size() <= 5 &&
+        request.resource.data.craques[0] is string && request.resource.data.craques[0].size() <= 40 &&
+
+        // código da campanha (opcional, usado no placar dos desafios)
+        (!('seed' in request.resource.data) ||
+          (request.resource.data.seed is string &&
+           request.resource.data.seed.matches('^[a-z0-9]{4,12}$'))) &&
+
+        request.resource.data.createdAt is timestamp &&
+        // janela larga: celulares com relógio errado não devem ser recusados
+        request.resource.data.createdAt > request.time - duration.value(1, 'd') &&
+        request.resource.data.createdAt < request.time + duration.value(1, 'd');
+
+      allow update, delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,6 @@
+.DS_Store
+node_modules/
+.env
+.firebase/
+*-debug.log
+key.json
