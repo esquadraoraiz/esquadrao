@@ -349,3 +349,30 @@
 /* a janela da revelação já tem o fundo escuro do jogo (.reveal) */
 .reveal.er-v{color:var(--tinta)}
 .er-cf__faixa > span:nth-child(2){text-overflow:ellipsis}
+
+/* ═══ B28 parte 2 · carta da mão escalando com a tela no computador (só a partir de 1024px; o celular não muda) ═══
+   Em 1366px: glifo 28px, nome 16px, descrição 14px, número 32px (mínimos do B28). Em 1920px, no máximo ~1,3× disso.
+   O layout de mesa (B28 parte 1, ART) vem depois e deixa a carta mais larga. */
+@media (min-width:1024px){
+  #hand .er-cm{--glifo:clamp(28px,2.05vw,36px);grid-template-rows:calc(var(--glifo) + 8px) 1fr;min-height:clamp(220px,16.8vw,290px)}
+  #hand .er-cm__faixa{gap:6px;padding:0 5px}
+  #hand .er-cm__faixa img{width:var(--glifo);height:var(--glifo)}
+  #hand .er-cm__risco{font-size:clamp(11px,.8vw,14px);padding:4px 6px}
+  #hand .er-cm__corpo{gap:4px;padding:8px 9px 10px}
+  #hand .er-cm__tipo{font-size:clamp(11px,.8vw,14px)}
+  #hand .er-cm__nome{font-size:clamp(16px,1.17vw,20px)}
+  #hand .er-cm__desc{font-size:clamp(14px,1.025vw,18px);line-height:1.3}
+  #hand .er-cm__num{font-size:clamp(32px,2.35vw,41px)}
+  #hand .er-cm__num--faixa{font-size:clamp(26px,1.9vw,33px)}
+  #hand .er-cm__rot{font-size:clamp(11px,.8vw,14px);padding:4px 5px}
+  #hand .er-cm__bonus{font-size:clamp(12px,.88vw,15px);padding:3px 5px}
+  #hand .er-cm__ordem{width:clamp(32px,2.35vw,40px);height:clamp(32px,2.35vw,40px);font-size:clamp(19px,1.4vw,24px);top:-13px;right:-10px}
+  /* dica do atalho (B28): o número da tecla no canto da carta, só no computador */
+  #hand .er-cm__tecla{position:absolute;left:6px;bottom:6px;font:700 clamp(10px,.75vw,13px)/1 var(--font-dados);color:rgba(27,26,20,.55);border:1.5px solid rgba(27,26,20,.35);border-radius:4px;padding:3px 5px;opacity:0;transition:opacity 120ms}
+  #hand .er-cm:hover .er-cm__tecla,#hand .er-cm:focus-visible .er-cm__tecla{opacity:1}
+  .er-dock .er-btn kbd{font:700 11px/1 var(--font-dados);opacity:.7;margin-left:6px;text-transform:none}
+}
+#hand .er-cm__tecla{display:none}
+@media (min-width:1024px){ #hand .er-cm__tecla{display:block} }
+.er-dock .er-btn kbd{display:none}
+@media (min-width:1024px){ .er-dock .er-btn kbd{display:inline} }
