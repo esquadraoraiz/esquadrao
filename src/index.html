@@ -24,7 +24,7 @@ img{max-width:100%}
 <body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&family=Archivo:wght@400;500;600;700;800&family=DM+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&family=Archivo:wght@400;500;600;700;800&family=DM+Mono:wght@500&family=Big+Shoulders+Display:wght@700;900&family=Figtree:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap">
 <style>
 /* Layout: gramado listrado ao fundo; placar e narração em papel de álbum; lances e craques como figurinhas (craques brilhantes). Tema único, por escolha. */
 :root{
@@ -118,7 +118,6 @@ h2{font-size:clamp(24px,5vw,34px)}
 @keyframes flash{0%{transform:scale(1)}40%{transform:scale(1.06)}100%{transform:scale(1)}}
 
 /* Mão de lances */
-.hand{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
 .card{background:var(--cal);color:var(--tinta);border-radius:8px;border:2px solid var(--tinta);padding:0;text-align:left;display:flex;flex-direction:column;min-height:132px;transition:transform .15s ease, box-shadow .15s ease;box-shadow:0 4px 0 rgba(0,0,0,.25);overflow:hidden}
 .card .ct{padding:4px 8px;font-family:var(--f-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#fff}
 .card .cb{padding:6px 8px;display:flex;flex-direction:column;gap:2px;flex:1}
@@ -234,48 +233,7 @@ h2{font-size:clamp(24px,5vw,34px)}
 .timeline li.gc i{background:linear-gradient(90deg,var(--gol) 50%,var(--perigo) 50%)}
 @keyframes pulse{50%{opacity:.45}}
 
-.forecast{display:flex;flex-direction:column;gap:12px}
-.fc-row{display:flex;flex-direction:column;gap:5px}
-.fc-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.chip{font-family:var(--f-mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:3px 8px;border-radius:999px;font-weight:500;white-space:nowrap}
-.chip.ok{background:var(--gol);color:#fff} .chip.bad{background:var(--perigo);color:#fff} .chip.idle{background:var(--papel);color:var(--tinta-2)}
-.bar{height:12px;border-radius:999px;background:var(--papel);overflow:hidden;position:relative}
-.bar i{display:block;height:100%;border-radius:999px;background:var(--tinta-2);transition:width .25s ease}
-.fc-row.ok .bar i{background:var(--gol)} .fc-row.bad .bar i{background:var(--perigo)}
-.duel{display:flex;align-items:center;gap:10px;min-height:44px}
-.side-n{display:flex;flex-direction:column;align-items:center;min-width:2.4em;line-height:1}
-.side-n b{font-family:var(--f-display);font-weight:400;font-size:30px;font-variant-numeric:tabular-nums}
-.side-n small{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--tinta-2);margin-top:3px}
-.tug{flex:1;display:flex;gap:3px;height:10px;min-width:0}
-.tug i{display:block;flex-basis:0;border-radius:999px;min-width:6px;transition:flex-grow .3s ease}
-.tug .l{background:var(--anil)}
-.tug .r{background:#c4ccbf}
-.tug.threat .l{background:var(--tinta)}
-.tug.threat .r{background:var(--perigo)}
-.fc-row.ok .side-n.mine b{color:var(--gol)}
-.fc-row.ok .tug .l{background:var(--gol)}
-.fc-row.bad .side-n.theirs b{color:var(--perigo)}
-.fc-row.idle .side-n b{color:var(--tinta-2)}
-.duel.calm{justify-content:center;background:var(--papel);border-radius:999px;min-height:36px;padding:0 12px}
-.calm-txt{font-family:var(--f-mono);font-size:11px;color:var(--tinta-2);text-align:center}
-.fc-row{padding:10px 12px;border-radius:6px;background:linear-gradient(var(--cal),var(--cal)) padding-box;border:1.5px solid var(--papel)}
-.fc-row.ok{border-color:var(--gol)}
-.fc-row.bad{border-color:rgba(216,67,47,.55)}
-.chip.maybe{background:var(--canarinho);color:var(--tinta)}
-.fc-row.maybe{border-color:var(--canarinho)}
-.fc-row.maybe .side-n.mine b{color:#9a7400}
-.side-n.range b{font-size:24px}
 .riskb{font-style:normal;background:var(--canarinho);color:var(--tinta);border-radius:3px;padding:0 4px;margin-left:4px;font-size:9px}
-.fc-nums{font-size:13px;color:var(--tinta-2);display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
-.fc-nums b{color:var(--tinta);font-size:15px}
-.fc-nums .calc{font-family:var(--f-mono);font-size:12px}
-.fc-nums .cmb{color:var(--anil);font-size:12px}
-.combohint{display:flex;flex-direction:column;gap:6px}
-.combohint>div{display:flex;flex-wrap:wrap;gap:6px}
-.cpill{font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;border:1px solid var(--tinta-2);color:var(--tinta)}
-.cpill small{font-weight:400;color:var(--tinta-2)}
-.cpill.on{background:var(--anil);border-color:var(--anil);color:#fff}
-.cpill.on small{color:rgba(255,255,255,.85)}
 
 .card{position:relative}
 .card .ord{position:absolute;top:-8px;right:-6px;width:24px;height:24px;border-radius:50%;background:var(--canarinho);color:var(--tinta);font-family:var(--f-display);font-size:13px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 0 rgba(0,0,0,.25);z-index:1}
@@ -330,17 +288,6 @@ h2{font-size:clamp(24px,5vw,34px)}
 .tut-prog i.on{background:var(--anil)}
 .retut{background:transparent;border:1px solid var(--anil);color:var(--anil);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:700;align-self:flex-start}
 @media (max-width:640px){
-  .forecast{display:grid!important;grid-template-columns:1fr 1fr;gap:8px}
-  .fc-row{padding:8px}
-  .duel{gap:6px}
-  .side-n{min-width:1.8em}
-  .side-n b{font-size:24px}
-  .tug{height:8px}
-  .fc-head{flex-direction:column;align-items:flex-start;gap:4px}
-  .fc-nums{font-size:11.5px}
-  .fc-nums b{font-size:14px}
-  .fc-nums .calc{flex-basis:100%}
-  .chip{font-size:10px;padding:2px 7px}
   .btn.play small{font-size:10px}
   .btn.ghostbtn{flex:0 0 auto!important;padding:10px}
   .pill{font-size:20px}
@@ -461,8 +408,6 @@ button,.card,.craque{touch-action:manipulation;-webkit-tap-highlight-color:trans
   .card .cdesc{font-size:10.5px}
   .card .cval{font-size:24px}
   .card.sel{transform:translateY(-6px)}
-  .dock .btn{flex:1 1 0;font-size:16px;padding:12px 10px}
-  .dock .full,.dock .deckinfo{display:none}
   .album.mine{display:flex;overflow-x:auto;gap:8px;padding-bottom:4px;scroll-snap-type:x mandatory}
   .album.mine .craque{flex:0 0 150px;min-height:0;scroll-snap-align:start}
   .album.mine .slot{display:none}
@@ -470,7 +415,6 @@ button,.card,.craque{touch-action:manipulation;-webkit-tap-highlight-color:trans
   .radio{max-height:160px}
   h1{font-size:30px}
   .tag{font-size:10px}
-  .hand{grid-template-columns:repeat(3,minmax(0,1fr))}
   .album{grid-template-columns:repeat(3,minmax(0,1fr))}
   .sgoals{font-size:32px}.sname{font-size:14px}
   .intent{grid-template-columns:1fr}
@@ -479,12 +423,9 @@ button,.card,.craque{touch-action:manipulation;-webkit-tap-highlight-color:trans
 /* revisão: faixas de risco numa linha só, mão de 7 cartas, selo de risco sem bater no número da seleção */
 .pill,.side-n b{white-space:nowrap}
 .pill.rng{font-size:19px}
-.hand.h7{grid-template-columns:repeat(7,minmax(0,1fr))}
 .card.sel .ct{padding-right:26px}
 @media (max-width:640px){
-  .hand.h7{grid-template-columns:repeat(3,minmax(0,1fr))}
   .pill.rng{font-size:16px}
-  .side-n.range b{font-size:19px}
 }
 @media (max-width:360px){ .card .cname{font-size:13.5px;overflow-wrap:anywhere} }
 
@@ -512,6 +453,7 @@ body.has-consent{padding-bottom:calc(48px + var(--consent-h,0px))}
 body.has-consent .dock{bottom:var(--consent-h,0px)}
 .linkbtn{background:none;border:0;padding:0;color:inherit;font-size:inherit;text-decoration:underline;text-underline-offset:2px}
 </style>
+<link rel="stylesheet" href="/visual.css?v=b03">
 
 <div class="wrap">
   <header class="mast">
@@ -569,6 +511,7 @@ body.has-consent .dock{bottom:var(--consent-h,0px)}
       <h3>O resto em uma linha cada</h3>
       <ul class="bullets">
         <li><b>Craques:</b> figurinhas com efeito permanente. Você começa com 1 e pode ter até 5.</li>
+        <li><b>Golaço e Pintura:</b> gol com o dobro da zaga é Golaço (+R$ 2 na janela); com o triplo, Pintura (+R$ 5). Os dois valem mais pontos no ranking.</li>
         <li><b>Substituição:</b> troca as cartas selecionadas por novas, sem gastar o lance. São 3 por jogo.</li>
         <li><b>Janela de transferências:</b> depois de cada vitória, gaste o prêmio em craques, cartas novas ou para dispensar cartas fracas do deck.</li>
         <li><b>Condições:</b> chuva, calor ou casa cheia mudam alguns números naquele jogo.</li>
@@ -832,14 +775,55 @@ function zagaFor(){ return Motor.zagaFor(G, M); }
 function evaluate(cards, mode){ return Motor.evaluate(G, M, cards, mode); }
 function cardEff(c){ return Motor.cardEff(G, M, c); }
 const COMBO_RECIPE={'Tiki-taka':'3 toques','Jogo Bonito':'2 dribles','Cabeçada':'Cruzamento + Chute','Ensaiada':'Falta + Chute ou Cruzamento','Contra-ataque':'Defesa + Lançamento','Pintou um quadro':'Drible + Chute','Tabela e finaliza':'Toque + Chute'};
-function handCombos(){ return Motor.handCombos(G, M); }
-function matchCardHTML(c,order,dim,dis){
+/* Carta da mão no visual novo (B03, MaoDoLance do design system): faixa do tipo só com o glifo, ATQ azul (D4) */
+const CM_TIPO={toque:'toque',lancamento:'lancamento',cruzamento:'cruzamento',chute:'chute',drible:'drible',bola:'falta',defesa:'defesa',catimba:'catimba'};
+function maoCartaHTML(c,order,dim,dis,destaque){
   const b=CARDS[c.t], e=cardEff(c), isAtk=b.atk!==undefined, base=isAtk?b.atk:b.def, diff=(isAtk?e.atk:e.def)-base;
   const fl=riskFloor(); const v = b.risk ? `${Math.max(0,Math.max(b.lo,fl)+diff)}–${Math.max(b.hi,fl)+diff}` : (isAtk?e.atk:e.def);
-  return `<button class="card t-${b.tag} ${order?'sel':''} ${dim?'dim':''}" data-id="${c.id}" ${dis?'disabled':''} aria-pressed="${!!order}" aria-label="${b.n}, ${v} de ${isAtk?'ataque':'defesa'}${order?', selecionada':''}">
-    <span class="ct">${TAGNAME[b.tag]}${b.risk?' <em class="riskb">risco</em>':''}</span>${order?`<span class="ord">${order}</span>`:''}
-    <span class="cb"><span class="cname">${b.n}</span><span class="cdesc">${b.d}</span>
-    <span class="cval"><span class="pill ${isAtk?'atk':'def'} ${b.risk?'rng':''}">${v}<small>${isAtk?'ATQ':'DEF'}</small></span>${diff?`<span class="bonus ${diff>0?'up':'down'}">${diff>0?'+':''}${diff}</span>`:''}</span></span></button>`;
+  const tipo=CM_TIPO[b.tag]||'toque';
+  const label=`${b.n}, ${TAGNAME[b.tag]}, ${v} de ${isAtk?'ataque':'defesa'}${b.risk?', carta de risco':''}${order?`, selecionada ${order}ª`:''}`;
+  return `<button class="er-cm er-cm--${tipo}${b.risk?' er-cm--risco':''}${dim?' er-cm--esmaecida':''}${destaque?' er-cm--destaque':''}" type="button" data-id="${c.id}" ${dis?'disabled':''} aria-pressed="${!!order}" aria-label="${label}">`
+    +`<span class="er-cm__faixa"><img src="/icones/tipo-${tipo}.svg" alt="" width="18" height="18">${b.risk?'<span class="er-cm__risco">risco</span>':''}</span>`
+    +`<span class="er-cm__corpo"><span class="er-cm__tipo">${TAGNAME[b.tag]}</span><span class="er-cm__nome">${b.n}</span><span class="er-cm__desc">${b.d}</span>`
+    +`<span class="er-cm__val"><span class="er-cm__num${b.risk?' er-cm__num--faixa':''}">${v}</span><span class="er-cm__rot${isAtk?'':' er-cm__rot--def'}">${isAtk?'ATQ':'DEF'}</span>`
+    +`${diff?`<span class="er-cm__bonus${diff<0?' er-cm__bonus--menos':''}">${diff>0?'+':'−'}${Math.abs(diff)}</span>`:''}</span></span>`
+    +`${order?`<span class="er-cm__ordem" aria-hidden="true">${order}</span>`:''}</button>`;
+}
+/* Combos possíveis nesta mão (B03, ChipCombo): ordem fixa da tabela do Como jogar, nunca por valor (não é dica de jogada) */
+const ORDEM_COMBOS=['Tiki-taka','Cabeçada','Jogo Bonito','Ensaiada','Contra-ataque','Pintou um quadro','Tabela e finaliza'];
+const MULT_BASE={'Tiki-taka':2,'Cabeçada':1.6,'Jogo Bonito':1.5,'Ensaiada':1.5,'Contra-ataque':1.5,'Pintou um quadro':1.5,'Tabela e finaliza':1.4};
+const COMBO_CHAVE={'Cabeçada':'cabecada','Jogo Bonito':'bonito'};
+const fmtMult=m=>String(m).replace('.',',');
+// Cada combo que a mão permite (até 3 cartas), com um jeito de formá-lo e se ele só existe pelo apelido de um craque.
+// "parceiro": o combo ainda cabe junto com as cartas já escolhidas.
+function combosDaMao(){
+  const h=M.hand, n=h.length, achados=new Map(), sel=[...M.sel];
+  const temAlias=G.craques.some(k=>k.alias), Gsem={...G, craques:G.craques.filter(k=>!k.alias)};
+  for(let m=1;m<(1<<n);m++){ const s=[]; for(let i=0;i<n;i++) if(m&(1<<i)) s.push(h[i]); if(s.length>3) continue;
+    const cb=Motor.combo(G,s); if(!cb.name) continue;
+    const alias = temAlias && Motor.combo(Gsem,s).name!==cb.name;
+    const parceiro = sel.length>0 && sel.every(id=>s.some(c=>c.id===id));
+    const a=achados.get(cb.name);
+    if(!a) achados.set(cb.name,{nome:cb.name, m:cb.m, cartas:s, alias, parceiro});
+    else { if(a.alias && !alias){ a.alias=false; a.cartas=s; } if(parceiro) a.parceiro=true; if(cb.m>a.m) a.m=cb.m; }
+  }
+  return [...achados.values()].sort((x,y)=>ORDEM_COMBOS.indexOf(x.nome)-ORDEM_COMBOS.indexOf(y.nome));
+}
+function chipComboHTML(a, aceso){
+  const base=MULT_BASE[a.nome], mudou=base!==undefined && a.m!==base;
+  const kMult = mudou ? G.craques.find(k=>k.combo && k.combo[COMBO_CHAVE[a.nome]]) : null;
+  const kAlias = a.alias ? G.craques.find(k=>k.alias) : null, k=kMult||kAlias;
+  const receita = a.alias ? a.cartas.map(c=>CARDS[c.t].n).join(' + ') : COMBO_RECIPE[a.nome];
+  const curto = k ? k.n.split(' ')[0] : '';
+  const label=`${a.nome}, ${receita}, vezes ${fmtMult(a.m)}${k?`, alterado por ${curto}`:''}${aceso?', é o combo das cartas escolhidas':''}`;
+  return `<button class="er-chip${k?' er-chip--craque':''}${a.parceiro&&!aceso?' er-chip--parceiro':''}" type="button" data-combo="${esc(a.nome)}" aria-pressed="${aceso}" aria-label="${esc(label)}">${a.nome} <span class="er-chip__receita">${esc(receita)}</span>${mudou?`<s>×${fmtMult(base)}</s>`:''}<b>×${fmtMult(a.m)}</b>${k?`<span class="er-chip__craque">${esc(curto)}</span>`:''}</button>`;
+}
+// Barra do duelo na previsão: escala com folga de 15% sobre o maior número (Previsao do design system)
+function barraDuelo(val, alvo, faixa, def){
+  const sc=Math.max(faixa?faixa[1]:val, alvo, 1)*1.15, p=x=>Math.min(100,Math.max(0,x)/sc*100).toFixed(1)+'%';
+  const alvoHTML=`<i class="er-pv__alvo${def?' er-pv__alvo--ameaca':''}" style="left:${p(alvo)}"></i>`;
+  if(faixa) return `<i class="er-pv__fill" style="width:${p(faixa[0])}"></i><i class="er-pv__fill er-pv__fill--faixa" style="left:${p(faixa[0])};width:${p(faixa[1]-faixa[0])}"></i>${alvoHTML}`;
+  return `<i class="er-pv__fill${def?' er-pv__fill--def':''}" style="width:${p(val)}"></i>${alvoHTML}`;
 }
 function cardHTML(c,sel,dis){
   const b=CARDS[c.t]; const val = b.risk ? `${b.lo}–${b.hi}<small>${b.atk!==undefined?'ATQ':'DEF'}</small>` : b.atk ? `${b.atk}<small>ATQ</small>` : `${b.def}<small>DEF</small>`;
@@ -858,11 +842,18 @@ function renderMatch(){
   const riskyDef = cards.some(c=>CARDS[c.t].risk && CARDS[c.t].def!==undefined);
   const defOk = riskyDef ? evLo.def>=M.intent : ev.def>=M.intent;
   const defMaybe = riskyDef && !defOk && evHi.def>=M.intent;
-  const atkChip = !ev.hasAtk ? '<span class="chip idle">Sem ataque</span>' : goalOk ? `<span class="chip ok">${viaBarriga?'Gol de barriga':'É gol'}</span>` : maybe ? '<span class="chip maybe">Depende do chute</span>' : `<span class="chip bad">Faltam ${zE-evHi.total}</span>`;
+  const atkEst = !ev.hasAtk ? 'idle' : goalOk ? 'ok' : maybe ? 'talvez' : 'nao';
+  const atkChip = !ev.hasAtk ? 'Sem ataque' : goalOk ? (viaBarriga?'Gol de barriga':'É gol') : maybe ? 'Depende do chute' : `Faltam ${zE-evHi.total}`;
   const atkShown = risky && ev.hasAtk ? `${evLo.total}–${evHi.total}` : ev.total;
-  const defChip = M.intent===0 ? '<span class="chip idle">Tocam a bola</span>' : defOk ? '<span class="chip ok">Você segura</span>' : defMaybe ? '<span class="chip maybe">Depende da saída</span>' : `<span class="chip bad">Faltam ${M.intent-(riskyDef?evHi.def:ev.def)}</span>`;
-  const multTxt = ev.mult!==1 ? ` × ${ev.mult.toFixed(1).replace('.',',')}${ev.combo?` <b class="cmb">${ev.combo}</b>`:''}` : '';
-  const combos = M.over? [] : handCombos();
+  const defEst = M.intent===0 ? 'idle' : defOk ? 'ok' : defMaybe ? 'talvez' : 'nao';
+  const defChip = M.intent===0 ? 'Tocam a bola' : defOk ? 'Você segura' : defMaybe ? 'Depende da saída' : `Faltam ${M.intent-(riskyDef?evHi.def:ev.def)}`;
+  const multTxt = ev.mult!==1 ? ` × <i>${ev.mult.toFixed(1).replace('.',',')}</i>${ev.combo?` <em>${ev.combo}</em>`:''}` : '';
+  const kBarriga = G.craques.find(k=>k.barriga);
+  const contaAtk = !ev.hasAtk ? 'Escolha cartas de ataque'
+    : `${risky?'chute sorteado na hora':`<b>${ev.atk}</b>`}${multTxt}${ev.flat?` + ${ev.flat}`:''}${viaBarriga&&kBarriga?` · zaga ${M.zaga} − ${kBarriga.barriga} da barriga`:''}`;
+  const combos = M.over? [] : combosDaMao();
+  const destaque = M.destaque && combos.find(a=>a.nome===M.destaque);
+  const destaqueIds = new Set(destaque ? destaque.cartas.map(c=>c.id) : []);
   const timeline = BLOCKS.map((b,i)=>{ const h=M.hist[i]; let cls='', lab='';
       if(h){ cls = h.g&&h.c?'gc':h.g?'g':h.c?'c':'n'; lab = h.g&&h.c?'gol dos dois':h.g?'gol seu':h.c?'gol deles':'sem gol'; }
       else if(i===M.block && !M.over){ cls='now'; lab='lance atual'; }
@@ -884,44 +875,38 @@ function renderMatch(){
       ${G.craques.some(k=>k.barriga)&&!M.barrigaUsed&&!M.over?'<span class="tag" style="color:var(--canarinho)">Gol de barriga disponível</span>':''}
       ${G.challenge?`<span class="tag" style="color:var(--canarinho)">Desafio ${G.seed}</span>`:''}
     </div>
-    <section class="paper forecast" aria-live="polite">
-      <div class="fc-row atk ${!ev.hasAtk?'idle':goalOk?'ok':maybe?'maybe':'bad'}">
-        <div class="fc-head"><span class="eyebrow">Seu ataque</span>${atkChip}</div>
-        <div class="duel">
-          <span class="side-n mine ${risky?'range':''}"><b>${atkShown}</b><small>você</small></span>
-          <span class="tug" aria-hidden="true"><i class="l" style="flex-grow:${ev.total}"></i><i class="r" style="flex-grow:${M.zaga}"></i></span>
-          <span class="side-n theirs"><b>${M.zaga}</b><small>zaga</small></span>
-        </div>
-        <div class="fc-nums">${ev.hasAtk?`<span class="calc">${risky?'chute sorteado na hora':ev.atk}${multTxt}${ev.flat?` + ${ev.flat}`:''}</span>`:'Escolha cartas de ataque'}</div>
+    <section class="er-v er-pv" aria-live="polite" aria-label="Previsão do lance">
+      <div class="er-pv__q er-pv__q--${atkEst} pv-atk">
+        <span class="er-pv__t">Seu ataque</span><span class="er-pv__chip er-pv__chip--${atkEst}">${atkChip}</span>
+        <div class="er-pv__duelo"><span class="er-pv__n er-pv__n--atq${risky&&ev.hasAtk?' er-pv__n--faixa':''}">${atkShown}<small>você</small></span><span class="er-pv__barra" aria-hidden="true">${barraDuelo(ev.total, M.zaga, risky&&ev.hasAtk?[evLo.total,evHi.total]:null, false)}</span><span class="er-pv__n">${M.zaga}<small>zaga</small></span></div>
+        <div class="er-pv__conta">${contaAtk}</div>
       </div>
-      <div class="fc-row def ${M.intent===0?'idle':defOk?'ok':defMaybe?'maybe':'bad'}">
-        <div class="fc-head"><span class="eyebrow">Ataque do ${esc(t.n)}</span>${defChip}</div>
-        ${M.intent ? `<div class="duel">
-          <span class="side-n mine ${riskyDef?'range':''}"><b>${riskyDef?`${evLo.def}–${evHi.def}`:ev.def}</b><small>defesa</small></span>
-          <span class="tug threat" aria-hidden="true"><i class="l" style="flex-grow:${ev.def}"></i><i class="r" style="flex-grow:${M.intent}"></i></span>
-          <span class="side-n theirs"><b>${M.intent}</b><small>ataque</small></span>
-        </div>
-        <div class="fc-nums">${defOk?'Sua defesa segura o ataque':defMaybe?'Defesa sorteada na hora':'Junte cartas de defesa'}</div>`
-        : `<div class="duel calm"><span class="calm-txt">Só tocando a bola no meio-campo</span></div>
-        <div class="fc-nums">Pode ir com tudo para o ataque</div>`}
+      <div class="er-pv__q er-pv__q--${defEst} pv-def">
+        <span class="er-pv__t">Ataque do ${esc(t.n)}</span><span class="er-pv__chip er-pv__chip--${defEst}">${defChip}</span>
+        ${M.intent ? `<div class="er-pv__duelo"><span class="er-pv__n${riskyDef?' er-pv__n--faixa':''}">${riskyDef?`${evLo.def}–${evHi.def}`:ev.def}<small>defesa</small></span><span class="er-pv__barra" aria-hidden="true">${barraDuelo(ev.def, M.intent, riskyDef?[evLo.def,evHi.def]:null, true)}</span><span class="er-pv__n">${M.intent}<small>ataque</small></span></div>
+        <div class="er-pv__conta">${defOk?'Sua defesa segura o ataque':defMaybe?'Defesa sorteada na hora':'Junte cartas de defesa'}</div>`
+        : `<div class="er-pv__calmo">Só tocando a bola no meio-campo</div>
+        <div class="er-pv__conta">Pode ir com tudo para o ataque</div>`}
       </div>
     </section>
-    <div class="hand ${M.hand.length>6?'h7':''}" id="hand">${M.hand.map(c=>{ const o=order.indexOf(c.id)+1; return matchCardHTML(c,o,!o&&order.length>=3,M.over); }).join('')}</div>
-    <div class="actions dock">
-      <button class="btn play" id="play" ${M.over||!cards.length?'disabled':''}><span>Jogar lance</span><small>${summary}</small></button>
-      <button class="btn alt" id="sub" ${M.over||!cards.length||M.subs<=0?'disabled':''} title="Troca as cartas selecionadas por novas sem gastar o lance">Trocar <span class="full">selecionadas </span>(${M.subs})</button>
-      <button class="btn ghostbtn" id="clr" ${!cards.length?'hidden':''} aria-label="Limpar seleção">Limpar</button>
-      <span class="hint deckinfo">Deck: ${M.draw.length} · descarte: ${M.disc.length}</span>
-    </div>
-    ${combos.length?`<section class="paper combohint"><span class="eyebrow">Combos possíveis nesta mão</span><div>${combos.map(([n,m])=>`<span class="cpill ${ev.combo===n?'on':''}">${n} <small>${COMBO_RECIPE[n]} · x${String(m).replace('.',',')}</small></span>`).join('')}</div></section>`:''}
+    <div class="er-v er-mao3" id="hand">${M.hand.map(c=>{ const o=order.indexOf(c.id)+1; return maoCartaHTML(c,o,!o&&order.length>=3,M.over,destaqueIds.has(c.id)); }).join('')}</div>
+    <div class="dock"><div class="er-v er-dock">
+      <button class="er-btn er-btn--primario er-btn--empilhado" id="play" type="button" ${M.over||!cards.length?'disabled':''}>Jogar lance<span class="er-btn__sub">${summary}</span></button>
+      <button class="er-btn er-btn--secundario er-btn--compacto" id="sub" type="button" ${M.over||!cards.length||M.subs<=0?'disabled':''} title="Troca as cartas selecionadas por novas sem gastar o lance">Trocar (${M.subs})</button>
+      ${cards.length?'<button class="er-btn er-btn--fantasma er-btn--compacto" id="clr" type="button" aria-label="Limpar seleção">Limpar</button>':'<span></span>'}
+      <span class="er-dock__info">Deck: ${M.draw.length} · descarte: ${M.disc.length}</span>
+    </div></div>
+    ${combos.length?`<section class="er-v er-combos"><span class="er-hud-rotulo">Combos possíveis nesta mão</span><div class="er-chips">${combos.map(a=>chipComboHTML(a, ev.combo===a.nome)).join('')}</div></section>`:''}
     <section class="paper">
       <span class="eyebrow">Narração</span>
       <div class="radio" id="radio">${M.log.slice().reverse().map(l=>`<p class="${l.cls||''}"><span class="m">${l.m}</span>${l.txt}</p>`).join('')}</div>
     </section>
     <div><span class="eyebrow" style="color:rgba(245,247,239,.7)">Seu elenco · ${G.craques.length}/5</span><div class="album mine" style="margin-top:6px">${slots}</div></div>`;
-  app.querySelectorAll('#hand .card').forEach(b=>b.onclick=()=>{
-    const id=+b.dataset.id; if(M.sel.has(id)) M.sel.delete(id); else if(M.sel.size<3) M.sel.add(id); else return; renderMatch(); tutEvent('select');
+  app.querySelectorAll('#hand .er-cm').forEach(b=>b.onclick=()=>{
+    const id=+b.dataset.id; if(M.sel.has(id)) M.sel.delete(id); else if(M.sel.size<3) M.sel.add(id); else return; M.destaque=null; renderMatch(); tutEvent('select');
   });
+  // tocar num chip destaca as cartas que formam o combo; não escolhe por você
+  app.querySelectorAll('.er-combos .er-chip').forEach(b=>b.onclick=()=>{ M.destaque = M.destaque===b.dataset.combo ? null : b.dataset.combo; renderMatch(); });
   const p=document.getElementById('play'); if(p) p.onclick=playBlock;
   const s=document.getElementById('sub'); if(s) s.onclick=substitute;
   const c=document.getElementById('clr'); if(c) c.onclick=()=>{ M.sel.clear(); renderMatch(); };
@@ -1205,8 +1190,8 @@ const TUT_STEPS=[
   {phase:'draft', sel:'#nameBox', title:'Dê um nome ao seu time', text:'Ele aparece no placar, na narração e no ranking. Pode tocar numa sugestão se quiser.'},
   {phase:'draft', sel:'#draftPicks', title:'Escolha seu craque', text:'Cada craque tem um efeito que vale a campanha inteira. Toque numa figurinha para contratar.', wait:'pick', waitTxt:'Toque numa figurinha para continuar'},
   {phase:'match', sel:'.board', title:'O placar', text:'Cada jogo tem 6 lances de 15 minutos. A linha logo abaixo mostra o que aconteceu em cada lance.'},
-  {phase:'match', sel:'.fc-row.def', title:'Eles atacam', text:'É um duelo de números: à direita, em vermelho, a força do ataque deles; à esquerda, a sua defesa. Se o seu número for maior ou igual, você segura. Quando aparece Só tocando a bola, eles não atacam.'},
-  {phase:'match', sel:'.fc-row.atk', title:'Você ataca', text:'Mesmo duelo no ataque: o seu número contra a zaga deles. Maior ou igual é gol. Combos multiplicam o ataque, e depois de cada gol a zaga deles fica mais forte.'},
+  {phase:'match', sel:'.pv-def', title:'Eles atacam', text:'É um duelo de números: à direita, em vermelho, a força do ataque deles; à esquerda, a sua defesa. Se o seu número for maior ou igual, você segura. Quando aparece Só tocando a bola, eles não atacam.'},
+  {phase:'match', sel:'.pv-atk', title:'Você ataca', text:'Mesmo duelo no ataque: o seu número contra a zaga deles. Maior ou igual é gol. Combos multiplicam o ataque, e depois de cada gol a zaga deles fica mais forte.'},
   {phase:'match', sel:'#hand', title:'Escolha até 3 cartas', text:'Toque nas cartas e veja as barras mudarem. O número amarelo mostra a ordem da escolha.', wait:'select', waitTxt:'Selecione pelo menos uma carta'},
   {phase:'match', sel:'.dock', title:'Jogue o lance', text:'Toque em Jogar lance. Mão ruim? Trocar substitui as cartas selecionadas sem gastar o lance (3 por jogo).', wait:'play', waitTxt:'Toque em Jogar lance'},
   {phase:'match', sel:'.timeline', title:'Pronto, você já sabe jogar', text:'O resultado aparece na linha do tempo e na narração. Vença os 4 jogos para ser campeão. Regras e combos ficam no botão Como jogar.', last:true}
