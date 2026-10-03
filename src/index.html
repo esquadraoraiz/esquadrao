@@ -665,7 +665,9 @@ function todayKey(){
     const g=t=>parts.find(x=>x.type===t).value; return g('year')+g('month')+g('day'); }
   catch(e){ const d=new Date(Date.now()-3*3600e3); return `${d.getUTCFullYear()}${String(d.getUTCMonth()+1).padStart(2,'0')}${String(d.getUTCDate()).padStart(2,'0')}`; }
 }
-function dailyKey(seed){ return 'esquadrao-dia-'+seed; }
+// "Já jogou este código?" Vale para o desafio do dia e para o duelo por link (D34): só a primeira campanha
+// de cada pessoa num código conta no placar dele; as seguintes são treino. A chave do dia continua a mesma de antes.
+function dailyKey(seed){ return (isDaily(seed)?'esquadrao-dia-':'esquadrao-duelo-')+seed; }
 function dailyPlayed(seed){ try{ return localStorage.getItem(dailyKey(seed))==='1'; }catch(e){ return false; } }
 function markDaily(seed){ try{ localStorage.setItem(dailyKey(seed),'1'); }catch(e){} }
 function dailySeed(){ return 'd'+todayKey(); }
@@ -695,7 +697,7 @@ function newRun(seed){
   G=Motor.novaCampanha(sd||newSeed());
   G.name=loadName()||DEFAULT_NAME; G.challenge=!!sd; G.daily=isDaily(sd);
   G.pastDaily = G.daily && G.seed!==dailySeed();
-  G.practice = G.daily && !G.pastDaily && dailyPlayed(G.seed);
+  G.practice = (G.daily ? !G.pastDaily : G.challenge) && dailyPlayed(G.seed);
   showDraft();
 }
 function stageName(i){ return i<4 ? STAGES.at(i) : `Sem fim · jogo ${i-3}`; }
@@ -726,8 +728,9 @@ function showDraft(){
         ${G.practice?`<p><b>Você já jogou o desafio de hoje.</b> Esta campanha é treino: dá para jogar à vontade, mas só a primeira vale para o ranking do dia.</p>`
           :`<p>Hoje todo mundo joga <b>a mesma campanha</b>: mesmos adversários, condições, craques oferecidos e ataques deles. <b>Só a primeira tentativa vale para o ranking do dia.</b></p>`}
         <div id="chalBoard"></div></div>`
-      : G.challenge?`<div class="chal-banner"><span class="eyebrow">Desafio recebido · campanha ${G.seed}</span>
-        <p>Você vai jogar <b>exatamente a mesma campanha</b> de quem te desafiou: mesmos adversários, condições, craques oferecidos e ataques deles. Faça mais pontos para ganhar.</p>
+      : G.challenge?`<div class="chal-banner"><span class="eyebrow">Desafio recebido · campanha ${G.seed}${G.practice?' · treino':''}</span>
+        ${G.practice?`<p><b>Você já jogou este desafio.</b> Esta campanha é treino: dá para jogar à vontade, mas só a primeira vale para o placar do desafio.</p>`
+          :`<p>Você vai jogar <b>exatamente a mesma campanha</b> de quem te desafiou: mesmos adversários, condições, craques oferecidos e ataques deles. Faça mais pontos para ganhar. <b>Só a primeira tentativa vale para o placar do desafio.</b></p>`}
         <div id="chalBoard"></div></div>`
       :`<div class="daily-cta"><div><span class="eyebrow">Desafio do dia · ${dailyLabel(dailySeed())}</span><p>${dailyPlayed(dailySeed())?'Você já jogou hoje. Pode treinar, mas o ranking do dia já registrou sua tentativa.':'A mesma campanha para todo mundo hoje, com ranking do dia. Só a primeira tentativa vale.'}</p></div><div class="ctabtns"><button class="btn" id="goDaily" type="button">${dailyPlayed(dailySeed())?'Treinar o desafio de hoje':'Jogar o desafio de hoje'}</button><button class="btn ghostbtn" id="dailyRank" type="button">Ver ranking de hoje</button></div></div>
       <span class="eyebrow">Ou campanha livre · Copa dos Campeões</span>`}
@@ -762,7 +765,7 @@ function showDraft(){
     setName(inp.value);
     const c=CRAQUES.find(c=>c.id===el.dataset.id); Motor.contratar(G, c);
     Medir.evento('campanha_inicio', {tipo: G.daily ? 'desafio_do_dia' : G.challenge ? 'duelo' : 'normal'});
-    if(G.daily && !G.pastDaily && !G.practice) markDaily(G.seed);
+    if(!G.pastDaily && !G.practice) markDaily(G.seed); // a campanha de quem cria o código também é a primeira dele
     startMatch(); tutEvent('pick');
   });
   tutRender();
@@ -1079,7 +1082,7 @@ function inviteLink(){ return `${location.origin}${location.pathname}#d-${G.seed
 function emojiOf(h){ return h.cat==='pintura'?'🎨':h.cat==='golaco'?'💥':h.g&&h.c?'🟨':h.g?'🟩':h.c?'🟥':'⬜'; }
 function shareText(){
   const sc=runScore(), wins=sc.stage;
-  const head = G.daily ? `Esquadrão Raiz · Desafio do dia ${dailyLabel(G.seed)}${G.practice?' (treino)':''}` : `Esquadrão Raiz · campanha ${G.seed}`;
+  const head = G.daily ? `Esquadrão Raiz · Desafio do dia ${dailyLabel(G.seed)}${G.practice?' (treino)':''}` : `Esquadrão Raiz · campanha ${G.seed}${G.practice?' (treino)':''}`;
   const res = wins>=4 ? `🏆 ${stageTxt(wins).replace(/^./,c=>c.toUpperCase())}` : stageTxt(wins).replace(/^./,c=>c.toUpperCase());
   const lines = G.results.map(r=>`${stageShort(r.stage??0)} ${(r.hist||[]).map(emojiOf).join('')} ${r.score.replace(' (pên)','p')}`).join('\n');
   return `${head}\n${teamName()} · ${res} · ${sc.score.toLocaleString('pt-BR')} pts · maior lance ${sc.maiorLance}\n${lines}\nConsegue bater? ${inviteLink()}`;
@@ -1236,16 +1239,27 @@ const RANK_CACHE=new Map(); // evita reler o banco a cada clique (cada documento
 function cached(key, fn){ const c=RANK_CACHE.get(key); if(c && Date.now()-c.t<60000) return c.p;
   const p=fn().catch(e=>{ RANK_CACHE.delete(key); throw e; }); RANK_CACHE.set(key,{t:Date.now(),p}); return p; }
 function challengeFetch(seed){ return cached('c:'+seed, ()=>challengeFetchRaw(seed)); }
+// Filtros das consultas do ranking. Só a temporada atual aparece (D31); entradas antigas, sem o campo, ficam de fora.
+const filtroTemporada={fieldFilter:{field:{fieldPath:'temporada'},op:'EQUAL',value:{integerValue:String(TEMPORADA)}}};
+const filtroE=(...fs)=>({compositeFilter:{op:'AND',filters:fs}});
+function consultaDesafio(seed, ordenada){
+  const where=filtroE({fieldFilter:{field:{fieldPath:'seed'},op:'EQUAL',value:{stringValue:seed}}}, filtroTemporada);
+  return ordenada ? {from:[{collectionId:'scores'}],where,orderBy:[{field:{fieldPath:'score'},direction:'DESCENDING'}],limit:100}
+                  : {from:[{collectionId:'scores'}],where,limit:300};
+}
+function consultaGeral(ordenada){
+  return ordenada ? {from:[{collectionId:'scores'}],where:filtroTemporada,orderBy:[{field:{fieldPath:'score'},direction:'DESCENDING'}],limit:50}
+                  : {from:[{collectionId:'scores'}],where:filtroTemporada,limit:300};
+}
+const runQuery=q=>fetch(`${FS_BASE}:runQuery${keyQS()}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({structuredQuery:q})});
+// melhor campanha de cada time, já em ordem de pontos
+function melhorPorTime(rows){ const best=new Map(); for(const row of rows.sort((a,b)=>b.score-a.score)){ const k=row.team.trim().toLowerCase(); if(!best.has(k)) best.set(k,row); } return [...best.values()]; }
 async function challengeFetchRaw(seed){
-  const where={fieldFilter:{field:{fieldPath:'seed'},op:'EQUAL',value:{stringValue:seed}}};
-  const run=q=>fetch(`${FS_BASE}:runQuery${keyQS()}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({structuredQuery:q})});
-  // ordenado pelo índice composto (seed + score); se o índice ainda não existir, cai para a busca simples
-  let r=await run({from:[{collectionId:'scores'}],where,orderBy:[{field:{fieldPath:'score'},direction:'DESCENDING'}],limit:100});
-  if(!r.ok) r=await run({from:[{collectionId:'scores'}],where,limit:300});
+  // ordenado pelo índice composto (seed + temporada + score); se o índice ainda não existir, cai para a busca sem ordem
+  let r=await runQuery(consultaDesafio(seed, true));
+  if(!r.ok) r=await runQuery(consultaDesafio(seed, false));
   if(!r.ok) throw new Error('HTTP '+r.status);
-  const rows=(await r.json()).filter(x=>x.document).map(parseRow).sort((a,b)=>b.score-a.score);
-  const best=new Map(); for(const row of rows){ const k=row.team.trim().toLowerCase(); if(!best.has(k)) best.set(k,row); }
-  return [...best.values()];
+  return melhorPorTime((await r.json()).filter(x=>x.document).map(parseRow));
 }
 function rankListHTML(rows, mine){
   const me=(mine||'').trim().toLowerCase();
@@ -1263,12 +1277,11 @@ async function showChallengeBoard(el, seed, mine, intro){
 }
 function rankFetch(){ return cached('geral', rankFetchRaw); }
 async function rankFetchRaw(){
-  const q={structuredQuery:{from:[{collectionId:'scores'}],orderBy:[{field:{fieldPath:'score'},direction:'DESCENDING'}],limit:50}};
-  const r=await fetch(`${FS_BASE}:runQuery${keyQS()}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(q)});
+  // ordenado pelo índice composto (temporada + score); se o índice ainda não existir, cai para a busca sem ordem
+  let r=await runQuery(consultaGeral(true));
+  if(!r.ok) r=await runQuery(consultaGeral(false));
   if(!r.ok) throw new Error('HTTP '+r.status);
-  const rows=(await r.json()).filter(x=>x.document).map(parseRow);
-  const best=new Map(); for(const row of rows){ const k=row.team.trim().toLowerCase(); if(!best.has(k)) best.set(k,row); }
-  return [...best.values()].slice(0,10);
+  return melhorPorTime((await r.json()).filter(x=>x.document).map(parseRow)).slice(0,10);
 }
 const STAGE_TXT=['caiu na 1ª fase','caiu nas quartas','caiu na semifinal','vice-campeão','campeão'];
 function stageTxt(w){ return w<=4 ? STAGE_TXT.at(w) : `campeão + ${w-4} no sem fim`; }

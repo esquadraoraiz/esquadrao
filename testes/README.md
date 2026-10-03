@@ -6,8 +6,9 @@ Testes em Node puro, sem dependências. Carregam a regra do jogo direto de `src/
 node testes/sorteios.test.js    # cartas de risco e pênaltis seguem a semente; o motor não usa Math.random
 node testes/campanha.test.js    # mesma semente + mesmas escolhas = mesma campanha, lance a lance (com pênaltis)
 node testes/pontuacao.test.js   # pontos do B02 (500 + 1.000 por vitória + espetáculo 0..999), categorias do lance e a regra do firestore.rules
+node testes/tela.test.js        # o que é da tela: ranking só da temporada atual, duelo que conta uma vez
 ```
 
-Os três terminam com `TODOS OS TESTES PASSARAM`. Rode antes de abrir um pull request que mexa em sorteio, regra ou pontuação.
+Todos terminam com `TODOS OS TESTES PASSARAM`. Rode antes de abrir um pull request que mexa em sorteio, regra ou pontuação.
 
 `testes/simular.js` joga uma campanha inteira só com o motor, na mesma ordem em que a tela chama as regras. É a base para a validação do ranking no servidor (B09).
