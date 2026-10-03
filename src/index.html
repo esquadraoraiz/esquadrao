@@ -1024,6 +1024,27 @@ function substitute(){
 }
 const SHOUTS=['GOOOOOL!','É GOL!','BALANÇOU A REDE!']; // "GOLAÇO!" e "PINTURA!" ficam só para as categorias (B02)
 const GRITO_CAT={golaco:'GOLAÇO!', pintura:'PINTURA!'};
+/* Narração do lance (B25, GD). Só texto: sorteia fora da semente, como o autor do gol, e não repete na mesma partida.
+   gol, golaco, pintura: vêm depois do nome de quem marcou. corta, trave: substituem o texto antes do placar do lance.
+   "acerta o ângulo" é só do Golaço (supervisão #7). */
+const NARRA = {
+  gol: ['empurra para a rede','manda para o fundo do gol','completa para o gol','conclui sem chance de defesa'],
+  golaco: ['acerta o ângulo','estufa a rede com vontade','manda no cantinho, sem chance','finaliza com categoria',
+           'coloca onde o goleiro não alcança','faz o goleiro só olhar','marca um gol de placa','manda a bola na gaveta',
+           'acerta em cheio','cala a torcida rival','deixa o goleiro sentado','faz a rede dançar'],
+  pintura: ['faz uma obra de arte','marca o gol do ano','faz o estádio inteiro levantar','marca um gol para emoldurar',
+            'desenha o lance do começo ao fim','faz até o goleiro aplaudir','deixa a zaga inteira no chão','marca um gol inesquecível'],
+  corta: ['A zaga do {time} corta','O zagueiro do {time} chega antes e afasta','O goleiro do {time} fecha o ângulo e defende',
+          'Bloqueio na hora certa, a zaga do {time} segura','O {time} fecha a área e tira de lá','Corte no último instante'],
+  trave: ['Na trave! Faltou pouco','Explode no travessão','Tira tinta da trave','Passa raspando a trave']
+};
+function narra(tipo){
+  const usadas = M.narradas || (M.narradas = new Set());
+  let livres = NARRA[tipo].filter(f=>!usadas.has(tipo+'|'+f));
+  if(!livres.length){ NARRA[tipo].forEach(f=>usadas.delete(tipo+'|'+f)); livres = NARRA[tipo].slice(); }
+  const f = pick(livres); usadas.add(tipo+'|'+f);
+  return f.replace('{time}', esc(M.t.n));
+}
 function scorerName(){ return G.craques.length && R()<.7 ? pick(G.craques).n : pick(['o camisa 9','o ponta','o meia','o volante que se atreveu']); }
 function playBlock(){
   if(REVEAL.busy) return;
@@ -1036,12 +1057,12 @@ function playBlock(){
   if(ev.hasAtk){
     if(h.g){
       if(barriga){ M.log.push({m:min, txt:'Bateu, desviou e entrou: gol de barriga!'}); }
-      M.log.push({m:min, cls:'goal', txt:`<span class="shout">${GRITO_CAT[L.cat]||pick(SHOUTS)}</span> ${esc(scorerName())} ${GRITO_CAT[L.cat]?'acerta o ângulo':pick(['empurra para a rede','acerta o ângulo'])}${ev.combo?` no combo ${ev.combo}`:''}. ${ev.total} contra ${L.zagaAntes}.`});
+      M.log.push({m:min, cls:'goal', txt:`<span class="shout">${GRITO_CAT[L.cat]||pick(SHOUTS)}</span> ${esc(scorerName())} ${narra(L.cat==='pintura'?'pintura':L.cat==='golaco'?'golaco':'gol')}${ev.combo?` no combo ${ev.combo}`:''}. ${ev.total} contra ${L.zagaAntes}.`});
       M.log.push({m:min, txt:`O ${esc(M.t.n)} se fecha: zaga sobe para ${L.zagaDepois}.`});
     } else if(L.trave){
-      M.log.push({m:min, txt:`Na trave! Faltou pouco: ${ev.total} contra ${L.zagaAntes}.`});
+      M.log.push({m:min, txt:`${narra('trave')}: ${ev.total} contra ${L.zagaAntes}.`});
     } else {
-      M.log.push({m:min, txt:`A zaga do ${esc(M.t.n)} corta. ${ev.total} contra ${L.zagaAntes}.`});
+      M.log.push({m:min, txt:`${narra('corta')}. ${ev.total} contra ${L.zagaAntes}.`});
     }
   }
   // ataque deles

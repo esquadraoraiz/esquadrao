@@ -79,6 +79,33 @@ const temFiltroTemporada = q => JSON.stringify(q).includes('{"fieldFilter":{"fie
     check('apelido: no fim da campanha, nome proibido mostra o campo e trava o botão', q.run(`app.innerHTML.includes('Esse nome não pode entrar no ranking')`) && q.run(`document.getElementById('rankSend').disabled === true`));
   }
 
+  // ---------- Narração do lance (B25) ----------
+  {
+    const p = abrirPagina();
+    const r = JSON.parse(p.run(`(function(){
+      const out={jogos:0, gols:{gol:0,golaco:0,pintura:0}, fora:[], repetidas:0, anguloNoGol:0, trave:0, corta:0, outrasLinhas:[]};
+      for(let s=0;s<40;s++){
+        newRun('narra'+s); Motor.contratar(G, CRAQUES.find(c=>c.id===(s%2?'zico':'socrates'))); startMatch();
+        while(!M.over && M.block<6){ const h=M.hand.slice().sort((a,b)=>cardEff(b).atk-cardEff(a).atk).slice(0,(s%3)+1); M.sel.clear(); h.forEach(c=>M.sel.add(c.id)); playBlock(); }
+        out.jogos++; const vistas={};
+        for(const l of M.log){ const t=l.txt.replace(/<[^>]+>/g,'');
+          if(l.cls==='goal'){ const cat=/^GOLAÇO!/.test(t)?'golaco':/^PINTURA!/.test(t)?'pintura':'gol'; out.gols[cat]++;
+            const f=NARRA[cat].find(x=>t.includes(' '+x)); if(!f) out.fora.push(t);
+            if(cat==='gol' && t.includes('acerta o ângulo')) out.anguloNoGol++;
+            if(f){ const k=cat+f; if(vistas[k]) out.repetidas++; vistas[k]=1; } }
+          else if(/: \\d+ contra \\d+\\.$/.test(t) && NARRA.trave.some(x=>t.startsWith(x+':'))) out.trave++;
+          else if(/\\. \\d+ contra \\d+\\.$/.test(t) && !/^Gol do|tenta, mas/.test(t)){ if(NARRA.corta.some(x=>t.startsWith(x.replace('{time}',M.t.n)+'.'))) out.corta++; else out.outrasLinhas.push(t); }
+        }
+      }
+      return JSON.stringify(out); })()`));
+    check(`narração: ${r.jogos} jogos, gols ${JSON.stringify(r.gols)}, todos com frase da lista da categoria`, r.fora.length === 0 && r.gols.golaco > 0);
+    if (r.fora.length) console.log('      fora da lista:', r.fora.slice(0, 3));
+    check('narração: "acerta o ângulo" nunca no gol comum', r.anguloNoGol === 0);
+    check('narração: nenhuma frase de gol repete no mesmo jogo', r.repetidas === 0);
+    check(`narração: trave (${r.trave}) e zaga corta (${r.corta}) com as frases do B25`, r.trave + r.corta > 0 && r.outrasLinhas.length === 0);
+    if (r.outrasLinhas.length) console.log('      linhas não reconhecidas:', r.outrasLinhas.slice(0, 3));
+  }
+
   console.log(ok ? '\nTODOS OS TESTES PASSARAM' : '\nHÁ FALHAS');
   process.exit(ok ? 0 : 1);
 })().catch(e => { console.log('ERRO:', e.stack); process.exit(1); });
