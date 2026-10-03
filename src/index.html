@@ -714,7 +714,8 @@ function showDraft(){
   const setName=v=>{ const n=v.replace(/\s+/g,' ').trim().slice(0,24); G.name=n||DEFAULT_NAME; saveName(n); };
   inp.addEventListener('input',()=>setName(inp.value));
   app.querySelectorAll('.sugs button').forEach(b=>b.onclick=()=>{ inp.value=b.dataset.n; setName(inp.value); inp.focus(); });
-  app.querySelectorAll('.craque.pick').forEach(el=>el.onclick=()=>{
+  const picks=app.querySelectorAll('.craque.pick');
+  picks.forEach(el=>el.onclick=()=>{
     setName(inp.value);
     const c=CRAQUES.find(c=>c.id===el.dataset.id); Motor.contratar(G, c);
     Medir.evento('campanha_inicio', {tipo: G.daily ? 'desafio_do_dia' : G.challenge ? 'duelo' : 'normal'});
@@ -722,7 +723,7 @@ function showDraft(){
     startMatch(); tutEvent('pick');
   });
   // B28: a figurinha do draft também se escolhe pelo teclado (Tab até ela, Enter ou Espaço)
-  app.querySelectorAll('.craque.pick').forEach(el=>{ el.tabIndex=0; el.setAttribute('role','button');
+  picks.forEach(el=>{ el.tabIndex=0; el.setAttribute('role','button');
     el.setAttribute('aria-label', `Contratar ${el.querySelector('.cn')?el.querySelector('.cn').textContent.trim():''}`);
     el.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); el.click(); } }; });
   tutRender();

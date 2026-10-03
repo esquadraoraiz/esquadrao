@@ -17,7 +17,7 @@ function elemento() {
         const m = String(sel).match(/^\[data-(\w+)\]$/) || (String(sel) === '.craque.pick' ? [0, 'id'] : null);
         if (!m) return [];
         const re = String(sel) === '.craque.pick' ? /class="craque[^"]*pick[^"]*"[^>]*data-id="([^"]+)"/g : new RegExp('data-' + m[1] + '="([^"]+)"', 'g');
-        const arr = [...html.matchAll(re)].map(v => ({ dataset: { [m[1]]: v[1] } }));
+        const arr = [...html.matchAll(re)].map(v => { const e = elemento(); e.dataset = { [m[1]]: v[1] }; return e; });
         (t.__q = t.__q || {})[String(sel)] = arr; return arr;
       };
       if (k === 'querySelector' || k === 'closest') return () => elemento();
