@@ -63,6 +63,22 @@ const temFiltroTemporada = q => JSON.stringify(q).includes('{"fieldFilter":{"fie
   check('desafio do dia: primeira conta, segunda é treino', !dia1.treino && dia2.treino);
   check('desafio do dia: a chave no aparelho continua esquadrao-dia-<código>', armazenamento['esquadrao-dia-' + hoje] === '1');
 
+  // ---------- Apelido do ranking (B19) ----------
+  {
+    const fs = require('fs');
+    const p = abrirPagina();
+    const regras = fs.readFileSync(__dirname + '/../firestore.rules', 'utf8');
+    const naRegra = [...regras.matchAll(/team\.lower\(\)\.matches\('([^']*)'\)/g)].map(m => m[1]);
+    check('apelido: as expressões do jogo são as mesmas do firestore.rules', naRegra.length === 2 && naRegra[0] === p.run('APELIDO_LINK') && naRegra[1] === p.run('APELIDO_PROIBIDO'));
+    const okNome = n => p.run(`apelidoOk(${JSON.stringify(n)})`);
+    check('apelido: nomes comuns passam', ['Real Pelada', 'Galácticos do Bairro', 'Macaca de Campinas', 'E.C. Bahia 88'].every(okNome));
+    check('apelido: link, palavrão, vazio e longo demais são recusados', !['vem.me', 'https://x', 'Porra FC', 'Os Viado', '   ', 'x'.repeat(25)].some(okNome));
+    // no fim da campanha, nome proibido abre o campo para trocar e trava o botão de publicar
+    const q = abrirPagina();
+    q.run(`window.rankEnabled=()=>true; newRun('apelid'); G.name='Porra FC'; G.craques.push(CRAQUES[0]); startMatch(); M.over=true; G.results.push({t:'X',score:'0x1',win:false,gf:0,ga:1,hist:[],stage:0}); runOver(false);`);
+    check('apelido: no fim da campanha, nome proibido mostra o campo e trava o botão', q.run(`app.innerHTML.includes('Esse nome não pode entrar no ranking')`) && q.run(`document.getElementById('rankSend').disabled === true`));
+  }
+
   console.log(ok ? '\nTODOS OS TESTES PASSARAM' : '\nHÁ FALHAS');
   process.exit(ok ? 0 : 1);
 })().catch(e => { console.log('ERRO:', e.stack); process.exit(1); });

@@ -397,6 +397,31 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center;justify-conten
 .eg-st{font-family:var(--f-mono);font-size:12px;color:var(--tinta-2)} .eg-e{letter-spacing:1px} .eg-t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--tinta-2);font-size:13px}
 .share{width:100%;font-family:var(--f-mono);font-size:13px;background:var(--papel);color:var(--tinta);border:1px solid var(--tinta-2);border-radius:4px;padding:8px}
 footer{font-size:12px;color:rgba(245,247,239,.65);text-align:center;max-width:62ch;margin:6px auto 0}
+/* Rodapé do site com o crédito (B19, B23). O crédito some durante a partida. */
+footer{display:grid;gap:12px;justify-items:center;width:100%}
+footer p{margin:0}
+footer a,footer .linkbtn{color:var(--cal);text-decoration:underline;text-decoration-color:rgba(245,247,239,.45);text-underline-offset:3px}
+footer a:focus-visible,footer .linkbtn:focus-visible{outline:3px solid var(--canarinho);outline-offset:2px}
+.foot-base{display:grid;gap:10px;justify-items:center}
+.foot-links{display:flex;gap:8px;font-size:13px;flex-wrap:wrap;justify-content:center}
+.foot-cal{width:28px;height:2px;background:rgba(245,247,239,.45);border-radius:1px}
+.foot-cr{font-size:13px;white-space:nowrap}
+.foot-cr b,.foot-cr a{font-weight:700}
+body.em-partida .foot-cal,body.em-partida .foot-cr{display:none}
+@media (min-width:720px){
+  .foot-base{width:100%;grid-template-columns:auto 1fr auto;align-items:center;border-top:1px solid rgba(245,247,239,.2);padding-top:10px}
+  .foot-cal{display:none}
+  .foot-cr{grid-column:3;justify-self:end}
+}
+/* Ficha do jogo no fim do Como jogar (B23) */
+.assina{border-top:2px dashed rgba(20,35,27,.3);padding-top:14px;display:grid;gap:4px;justify-items:center;text-align:center}
+.assina p{margin:0}
+.assina-nome{font-family:var(--f-display);font-size:22px;line-height:1}
+.assina-cr{font-size:14px;color:var(--tinta-2)}
+/* Aviso do apelido (B19) */
+.namefield .aviso{margin:0;font-size:13px;color:var(--tinta-2)}
+.namefield .aviso a{color:var(--anil)}
+.namefield .aviso.err{color:var(--perigo);font-weight:700}
 details.rules summary{cursor:pointer;font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
 details.rules ul{margin:8px 0 0;padding-left:18px;font-size:14px}
 details.rules li{margin:3px 0}
@@ -563,6 +588,12 @@ body.has-consent .dock{bottom:var(--consent-h,0px)}
         <li>Na final, leia a regra do chefão antes do primeiro lance.</li>
       </ul>
 
+      <div class="assina">
+        <span class="eyebrow">Ficha do jogo</span>
+        <p class="assina-nome">Esquadrão Raiz</p>
+        <p class="assina-cr">Um jogo da <b>Softfini</b></p>
+      </div>
+
       <button class="btn" id="howGo" type="button">Entendi, bora jogar</button>
     </div>
   </div>
@@ -593,10 +624,17 @@ body.has-consent .dock{bottom:var(--consent-h,0px)}
       <div id="rankBody"></div>
     </div>
   </div>
-  <footer>Protótipo de fã, sem afiliação com clubes, atletas ou com a CBF. Nomes usados apenas como referência histórica. Uso pessoal. · <button class="linkbtn" id="prefDados" type="button">Preferências de dados</button></footer>
+  <footer>
+    <p class="foot-aviso">Esquadrão Raiz é um jogo de fã, gratuito, sem afiliação com clubes, atletas, CBF, federações ou ligas. Nomes de jogadores e clubes são usados como referência histórica do futebol brasileiro. Não usamos escudos, logotipos ou fotos.</p>
+    <div class="foot-base">
+      <nav class="foot-links" aria-label="Links legais"><a href="/privacidade" target="_blank" rel="noopener">Privacidade</a><span aria-hidden="true">·</span><a href="/termos" target="_blank" rel="noopener">Termos</a><span aria-hidden="true">·</span><button class="linkbtn" id="prefDados" type="button">Preferências de dados</button></nav>
+      <span class="foot-cal" aria-hidden="true"></span>
+      <span class="foot-cr">Um jogo da <b>Softfini</b></span>
+    </div>
+  </footer>
 </div>
 <div class="consent" id="consent" hidden role="region" aria-label="Consentimento de dados de uso">
-  <p>Usamos dados de uso para melhorar o jogo. <a href="#privacidade">Privacidade</a></p>
+  <p>Usamos dados de uso para melhorar o jogo. <a href="/privacidade" target="_blank" rel="noopener">Privacidade</a></p>
   <p class="c-atual" id="consentAtual" hidden></p>
   <div class="cbtns"><button class="c-ok" id="consentOk" type="button">Ok</button><button class="c-nao" id="consentNao" type="button">Não</button></div>
 </div>
@@ -680,6 +718,12 @@ const app = document.getElementById('app');
 const esc = s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 const DEFAULT_NAME='Esquadrão';
+/* Apelido do ranking (B19): até 24 letras, sem link e sem palavrão. Filtro básico; as MESMAS expressões estão em
+   firestore.rules (o teste confere que são iguais). Vale a string inteira, em minúsculas. */
+const APELIDO_LINK='.*(https?:|www[.]|[a-z0-9][.](com|net|org|br|io|gg|tv|me|xyz|ly)([^a-z0-9]|$)).*';
+const APELIDO_PROIBIDO='(.*[^a-z0-9])?(porra|caralho|buceta|boceta|puta|puto|putaria|arrombad[ao]|cuzao|cuzão|fdp|vsf|pqp|tnc|merda|bosta|foder|fodase|foda-se|fudid[ao]|corno|otario|otário|retardad[ao]|mongoloide|viado|bicha|traveco|sapatao|sapatão|vagabund[ao]|vadia|piroca|xoxota|xota|cacete|estupr[a-z]*|nazis?t?[ao]?|hitler)s?([^a-z0-9].*)?';
+function apelidoOk(n){ const s=String(n||'').toLowerCase(); return s.trim().length>=1 && s.length<=24 && !new RegExp('^(?:'+APELIDO_LINK+')$').test(s) && !new RegExp('^(?:'+APELIDO_PROIBIDO+')$').test(s); }
+const AVISO_APELIDO='Não use seu nome real. O apelido aparece para todos. <a href="/privacidade" target="_blank" rel="noopener">Privacidade</a>';
 const NAME_SUGS=['Esporte Clube Padaria','Atlético Várzea','Unidos da Resenha','Real Pelada','Sport Club Churrasco','Galácticos do Bairro'];
 function loadName(){ try{ return localStorage.getItem('esquadrao-nome')||''; }catch(e){ return ''; } }
 function saveName(n){ try{ localStorage.setItem('esquadrao-nome',n); }catch(e){} }
@@ -716,6 +760,7 @@ function craqueHTML(c,extra='',full=false){
   return `<div class="craque r-${r} ${extra}" style="--c1:${c.c1};--c2:${c.c2}" data-id="${c.id}"><div class="band">${esc(c.club)}</div><div class="cn">${esc(c.n)}${full?` <span class="rar r-${r}">${RAR[r].n}</span>`:''}</div><div class="ce">${esc(c.e)}</div>${full&&c.fact?`<div class="cf">${esc(c.fact)}</div>`:''}</div>`;
 }
 function showDraft(){
+  document.body.classList.remove('em-partida');
   hdr();
   const opts = Motor.ofertasDraft(G);
   app.innerHTML = `
@@ -740,6 +785,7 @@ function showDraft(){
         <label for="teamname">Nome do seu time</label>
         <div class="row"><input id="teamname" type="text" maxlength="24" autocomplete="off" spellcheck="false" placeholder="${DEFAULT_NAME}" value="${esc(G.name===DEFAULT_NAME?'':G.name)}"></div>
         <div class="sugs">${NAME_SUGS.map(n=>`<button type="button" data-n="${esc(n)}">${esc(n)}</button>`).join('')}</div>
+        <p class="aviso">${AVISO_APELIDO}</p>
       </div>
       <p class="lede muted" style="font-size:14px">Agora escolha seu craque de estreia. Outros chegam na janela de transferências.</p>
     </section>
@@ -800,6 +846,7 @@ function cardHTML(c,sel,dis){
   return `<button class="card t-${b.tag} ${sel?'sel':''}" data-id="${c.id}" ${dis?'disabled':''} aria-pressed="${sel}"><span class="ct">${TAGNAME[b.tag]}${b.risk?' <em class="riskb">risco</em>':''}</span><span class="cb"><span class="cname">${b.n}</span><span class="cdesc">${b.d}</span><span class="cval">${val}</span></span></button>`;
 }
 function renderMatch(){
+  document.body.classList.add('em-partida');
   const t=M.t; const order=[...M.sel]; const cards=order.map(id=>M.hand.find(c=>c.id===id)).filter(Boolean); const ev=evaluate(cards);
   const anyRisk = cards.some(c=>CARDS[c.t].risk);
   const risky = cards.some(c=>CARDS[c.t].risk && CARDS[c.t].atk!==undefined); // risco no ataque
@@ -1043,6 +1090,7 @@ function matchResult(win, pens){
   G.stage++; hdr(); showShop(prize, score);
 }
 function showShop(prize, score){
+  document.body.classList.remove('em-partida');
   const extraCat = M && M.over ? Motor.premioCategorias(M) : 0; // já incluído no prêmio (B02)
   const owned = new Set(G.craques.map(c=>c.id));
   let rolls=0, cOffers, kOffers;
@@ -1090,6 +1138,7 @@ function shareText(){
 function inviteText(){ return shareText(); }
 function selectText(id){ const el=document.getElementById(id); if(!el) return; const r=document.createRange(); r.selectNodeContents(el); const s=getSelection(); s.removeAllRanges(); s.addRange(r); }
 function runOver(champ){
+  document.body.classList.remove('em-partida');
   hdr();
   const t=M.t, wins=G.results.filter(r=>r.win).length, isChamp=wins>=4, canEndless = champ && !G.endless;
   const share=shareText();
@@ -1114,7 +1163,7 @@ function runOver(champ){
     <section class="paper" style="display:flex;flex-direction:column;gap:10px">
       <span class="eyebrow">${G.practice?'Treino · só ranking geral':G.daily?'Ranking do dia e ranking geral':'Placar desta campanha e ranking geral'}</span>
       <p class="lede">Sua campanha vale <b>${runScore().score.toLocaleString('pt-BR')} pontos</b> · maior lance ${runScore().maiorLance}${canEndless?'. Se continuar no modo sem fim, você publica depois, com mais pontos':''}.</p>
-      ${teamName()===DEFAULT_NAME?`<div class="namefield"><label for="pubName">Dê um nome ao seu time para entrar no ranking</label><div class="row"><input id="pubName" type="text" maxlength="24" autocomplete="off" spellcheck="false" placeholder="ex.: Unidos da Resenha"></div></div>`:''}
+      ${teamName()===DEFAULT_NAME||!apelidoOk(teamName())?`<div class="namefield"><label for="pubName">${teamName()===DEFAULT_NAME?'Dê um nome ao seu time para entrar no ranking':'Esse nome não pode entrar no ranking. Escolha outro'}</label><div class="row"><input id="pubName" type="text" maxlength="24" autocomplete="off" spellcheck="false" placeholder="ex.: Unidos da Resenha"></div><p class="aviso" id="pubAviso">${AVISO_APELIDO}</p></div>`:''}
       <div class="actions"><button class="btn" id="rankSend">Publicar como ${esc(teamName())}</button></div>
       <p class="rankstatus" id="rankMsg" hidden></p>
       <div id="chalEnd"></div>
@@ -1124,7 +1173,10 @@ function runOver(champ){
   const sendBtn=document.getElementById('rankSend'), rmsg=document.getElementById('rankMsg');
   const pub=document.getElementById('pubName');
   const syncName=()=>{ const n=(pub?pub.value:'').replace(/\s+/g,' ').trim().slice(0,24); if(pub){ G.name=n||DEFAULT_NAME; if(n) saveName(n); }
-    sendBtn.textContent = `Publicar como ${teamName()}`; if(rankEnabled()) sendBtn.disabled = !!pub && !n; };
+    sendBtn.textContent = `Publicar como ${teamName()}`;
+    const ruim = !!pub && !!n && !apelidoOk(n), av=document.getElementById('pubAviso');
+    if(av){ av.className = ruim ? 'aviso err' : 'aviso'; av.innerHTML = ruim ? 'Esse apelido não pode entrar no ranking: sem links e sem palavrões.' : AVISO_APELIDO; }
+    if(rankEnabled()) sendBtn.disabled = (!!pub && !n) || !apelidoOk(teamName()); };
   if(pub){ pub.addEventListener('input', syncName); syncName(); }
   if(!rankEnabled()){ sendBtn.disabled=true; rmsg.hidden=false; rmsg.textContent='O ranking funciona só na versão publicada do jogo.'; }
   sendBtn.onclick=async()=>{

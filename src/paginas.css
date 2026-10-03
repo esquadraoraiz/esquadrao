@@ -1,0 +1,60 @@
+/* Páginas do site (privacidade, termos): tema Dia do Framework visual (D3, D4).
+   Tokens do design system "figurinha de banca sob refletor", tema Dia. */
+:root{
+  --fundo:#eef2eb; --superficie:#fbfcf8; --superficie-alta:#f0f4ec; --linha:#cdd8c9; --linha-forte:#6d8172;
+  --tinta:#10251a; --tinta-suave:#4f6255; --gramado:#0f4a2c; --gramado-faixa:#145534; --cal:#f3f7f0;
+  --amarelo-cartao:#f5c430; --amarelo-tinta:#2a2105; --foco:#1f62bf; --link:#1f62bf;
+  --f-display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --f-texto:Figtree,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-dados:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fundo);color:var(--tinta);font:400 16px/24px var(--f-texto)}
+a{color:var(--link);text-decoration:underline;text-underline-offset:3px}
+a:focus-visible{outline:3px solid var(--foco);outline-offset:2px;border-radius:2px}
+
+.topo{background:var(--gramado);color:var(--cal);
+  background-image:repeating-linear-gradient(90deg,var(--gramado) 0 48px,var(--gramado-faixa) 48px 96px)}
+.topo-in{max-width:720px;margin:0 auto;padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.marca{font:900 28px/1 var(--f-display);letter-spacing:.01em;color:var(--cal);text-decoration:none;text-transform:uppercase}
+.marca em{font-style:normal;color:var(--amarelo-cartao)}
+.voltar{display:inline-flex;align-items:center;min-height:44px;padding:10px 16px;border-radius:6px;border:2px solid #1b1a14;
+  background:var(--amarelo-cartao);color:var(--amarelo-tinta);box-shadow:0 3px 0 #1b1a14;
+  font:900 15px/1 var(--f-display);letter-spacing:.06em;text-transform:uppercase;text-decoration:none}
+.voltar:active{transform:translateY(2px);box-shadow:0 1px 0 #1b1a14}
+.voltar:focus-visible{outline:3px solid var(--cal);outline-offset:2px}
+
+main{max-width:720px;margin:0 auto;padding:24px 16px 48px}
+.folha{background:var(--superficie);border:1px solid var(--linha);border-radius:16px;padding:24px 20px;box-shadow:0 2px 0 var(--linha)}
+.rotulo{font:500 11px/14px var(--f-dados);letter-spacing:.14em;text-transform:uppercase;color:var(--tinta-suave);margin:0 0 8px}
+h1{font:900 40px/1 var(--f-display);margin:0 0 8px;text-wrap:balance}
+.data{color:var(--tinta-suave);margin:0 0 20px}
+h2{font:700 26px/1.05 var(--f-display);margin:28px 0 8px}
+p{margin:0 0 12px}
+ul,ol{margin:0 0 12px;padding-left:22px}
+li{margin:0 0 8px}
+strong{font-weight:700}
+.destaque{background:var(--superficie-alta);border-left:0;border:1px solid var(--linha);border-radius:10px;padding:12px 14px;margin:12px 0}
+
+/* tabela vira lista de cartões no celular */
+table{width:100%;border-collapse:collapse;margin:8px 0 16px;font-size:15px;line-height:21px}
+th,td{text-align:left;vertical-align:top;padding:10px 8px;border-bottom:1px solid var(--linha)}
+th{font:500 11px/14px var(--f-dados);letter-spacing:.14em;text-transform:uppercase;color:var(--tinta-suave)}
+@media (max-width:600px){
+  table,thead,tbody,tr,th,td{display:block}
+  thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  tr{background:var(--superficie-alta);border:1px solid var(--linha);border-radius:10px;padding:10px 12px;margin:0 0 10px}
+  td{border:0;padding:2px 0}
+  td::before{content:attr(data-r);display:block;font:500 11px/14px var(--f-dados);letter-spacing:.14em;text-transform:uppercase;color:var(--tinta-suave);margin-top:6px}
+  td:first-child{font-weight:700}
+  td:first-child::before{margin-top:0}
+  h1{font-size:34px}
+}
+
+.rodape{max-width:720px;margin:0 auto;padding:0 16px 40px;color:var(--tinta-suave);font-size:13px;line-height:19px;display:grid;gap:12px;justify-items:center;text-align:center}
+.rodape p{margin:0}
+.rodape a{color:var(--tinta)}
+.rodape nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.rodape .cr b{font-weight:700;color:var(--tinta)}
