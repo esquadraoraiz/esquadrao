@@ -72,7 +72,8 @@ check(`gol de barriga do Renato é sempre Gol (${barriga.cat}, gol: ${barriga.go
 
 // ---------- Regra do Firestore, lida do arquivo e avaliada aqui ----------
 const regras = fs.readFileSync(__dirname + '/../firestore.rules', 'utf8');
-const corpo = regras.slice(regras.indexOf('allow create: if') + 'allow create: if'.length, regras.indexOf(';', regras.indexOf('allow create: if')));
+const semComentarios = regras.replace(/\/\/[^\n]*/g, '');
+const corpo = semComentarios.slice(semComentarios.indexOf('allow create: if') + 'allow create: if'.length, semComentarios.indexOf(';', semComentarios.indexOf('allow create: if')));
 let js = corpo
   .replace(/\/\/[^\n]*/g, '')
   .replace(/request\.resource\.data/g, 'd')
@@ -81,7 +82,9 @@ let js = corpo
   .replace(/d\.keys\(\)\.hasOnly\(/g, 'hasOnly(d,').replace(/d\.keys\(\)\.hasAll\(/g, 'hasAll(d,')
   .replace(/(d(?:\.\w+)+(?:\[0\])?) is (int|string|list|bool|timestamp)/g, (m, x, t) => `is_${t}(${x})`)
   .replace(/\.size\(\)/g, '.length')
-  .replace(/(d\.\w+)\.matches\(('[^']*')\)/g, 'new RegExp($2).test($1)');
+  .replace(/\.lower\(\)/g, '.toLowerCase()')
+  // matches() do Firestore vale para a string inteira
+  .replace(/(d\.\w+(?:\.toLowerCase\(\))?)\.matches\(('[^']*')\)/g, (m, alvo, re) => `new RegExp('^(?:' + ${re} + ')$').test(${alvo})`);
 const regra = new Function('d', 'T', `
   const hasOnly=(o,ks)=>Object.keys(o).every(k=>ks.includes(k)), hasAll=(o,ks)=>ks.every(k=>k in o);
   const is_int=Number.isInteger, is_string=x=>typeof x==='string', is_list=Array.isArray, is_bool=x=>typeof x==='boolean', is_timestamp=x=>typeof x==='number';
@@ -106,6 +109,13 @@ check('regra recusa temporada diferente de 1', !aceita({ ...base, temporada: 0 }
 check('regra recusa maior lance acima de 9.999', !aceita({ ...base, maiorLance: 10000 }));
 const antigo = { team: 'Teste', score: 500 + 2000 + 30 + 6, stage: 2, champion: false, gf: 6, ga: 3, craques: ['Zico'], seed: 'abcd', createdAt: agora };
 check('regra recusa o formato antigo (navegador com a versão em cache)', !aceita(antigo));
+
+// Apelido (B19): a regra recusa link e palavrão e aceita nomes de time comuns
+const comNome = team => ({ ...base, team });
+for (const t of ['Esporte Clube Padaria', 'Unidos da Resenha', 'Macaca de Campinas', 'E.C. Bahia 88', 'Sport Club Churrasco', 'Cuiabá Futebol Raiz', 'Putim FC'])
+  check(`regra aceita o apelido "${t}"`, aceita(comNome(t)));
+for (const t of ['www.meusite.com', 'Time do http://x', 'canal.tv da Resenha', 'Porra FC', 'CARALHO', 'Os Arrombados', 'Unidos do Hitler', 'fdp'])
+  check(`regra recusa o apelido "${t}"`, !aceita(comNome(t)));
 
 // Campanhas reais jogadas pelo motor: o documento que o jogo envia passa na regra
 let total = 0, passam = 0, comCat = 0;

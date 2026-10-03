@@ -18,6 +18,9 @@ service cloud.firestore {
         request.resource.data.team is string &&
         request.resource.data.team.size() >= 1 &&
         request.resource.data.team.size() <= 24 &&
+        // apelido (B19): sem link e sem palavrão. Filtro básico, com as mesmas expressões de src/index.html
+        !request.resource.data.team.lower().matches('.*(https?:|www[.]|[a-z0-9][.](com|net|org|br|io|gg|tv|me|xyz|ly)([^a-z0-9]|$)).*') &&
+        !request.resource.data.team.lower().matches('(.*[^a-z0-9])?(porra|caralho|buceta|boceta|puta|puto|putaria|arrombad[ao]|cuzao|cuzão|fdp|vsf|pqp|tnc|merda|bosta|foder|fodase|foda-se|fudid[ao]|corno|otario|otário|retardad[ao]|mongoloide|viado|bicha|traveco|sapatao|sapatão|vagabund[ao]|vadia|piroca|xoxota|xota|cacete|estupr[a-z]*|nazis?t?[ao]?|hitler)s?([^a-z0-9].*)?') &&
 
         request.resource.data.stage is int &&
         request.resource.data.stage >= 0 && request.resource.data.stage <= 60 &&
