@@ -108,6 +108,7 @@ h2{font-size:clamp(24px,5vw,34px)}
 .craque .cn{font-family:var(--f-display);font-size:15px;line-height:1}
 .craque .ce{font-size:11.5px;line-height:1.25;color:var(--tinta-2)}
 .craque.pick{cursor:pointer;min-height:150px}
+.craque.pick:focus-visible{outline:3px solid var(--canarinho);outline-offset:3px}
 .craque .cf{font-size:10.5px;line-height:1.25;color:var(--tinta-2);font-style:italic;border-top:1px dashed rgba(0,0,0,.15);margin-top:6px;padding-top:5px}
 .rar{display:inline-block;vertical-align:middle;font:600 9px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;border-radius:3px;padding:2px 5px;margin-left:4px;background:#eef0ec;color:var(--tinta-2)}
 .rar.r-R{background:#dce8f7;color:#1d3f6e}
@@ -414,7 +415,7 @@ body.has-consent{padding-bottom:calc(48px + var(--consent-h,0px))}
 body.has-consent .dock{bottom:var(--consent-h,0px)}
 .linkbtn{background:none;border:0;padding:0;color:inherit;font-size:inherit;text-decoration:underline;text-underline-offset:2px}
 </style>
-<link rel="stylesheet" href="/visual.css?v=b04">
+<link rel="stylesheet" href="/visual.css?v=b28">
 
 <div class="wrap">
   <header class="mast">
@@ -472,6 +473,7 @@ body.has-consent .dock{bottom:var(--consent-h,0px)}
       <h3>O resto em uma linha cada</h3>
       <ul class="bullets">
         <li><b>Craques:</b> figurinhas com efeito permanente. Você começa com 1 e pode ter até 5.</li>
+        <li><b>No computador:</b> as teclas 1 a 7 escolhem as cartas, Enter joga o lance, T troca, Esc limpa e Espaço pula a revelação.</li>
         <li><b>Golaço e Pintura:</b> gol com o dobro da zaga é Golaço (+R$ 2 na janela); com o triplo, Pintura (+R$ 5). Os dois valem mais pontos no ranking.</li>
         <li><b>Substituição:</b> troca as cartas selecionadas por novas, sem gastar o lance. São 3 por jogo.</li>
         <li><b>Janela de transferências:</b> depois de cada vitória, gaste o prêmio em craques, cartas novas ou para dispensar cartas fracas do deck.</li>
@@ -719,6 +721,10 @@ function showDraft(){
     if(!G.pastDaily && !G.practice) markDaily(G.seed); // a campanha de quem cria o código também é a primeira dele
     startMatch(); tutEvent('pick');
   });
+  // B28: a figurinha do draft também se escolhe pelo teclado (Tab até ela, Enter ou Espaço)
+  app.querySelectorAll('.craque.pick').forEach(el=>{ el.tabIndex=0; el.setAttribute('role','button');
+    el.setAttribute('aria-label', `Contratar ${el.querySelector('.cn')?el.querySelector('.cn').textContent.trim():''}`);
+    el.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); el.click(); } }; });
   tutRender();
 }
 
@@ -813,17 +819,17 @@ function encaixarNomes(){ try{ if(window.EsquadraoRaiz){ EsquadraoRaiz.encaixarT
 
 /* Carta da mão no visual novo (B03, MaoDoLance do design system): faixa do tipo só com o glifo, ATQ azul (D4) */
 const CM_TIPO={toque:'toque',lancamento:'lancamento',cruzamento:'cruzamento',chute:'chute',drible:'drible',bola:'falta',defesa:'defesa',catimba:'catimba'};
-function maoCartaHTML(c,order,dim,dis,destaque){
+function maoCartaHTML(c,order,dim,dis,destaque,tecla){
   const b=CARDS[c.t], e=cardEff(c), isAtk=b.atk!==undefined, base=isAtk?b.atk:b.def, diff=(isAtk?e.atk:e.def)-base;
   const fl=riskFloor(); const v = b.risk ? `${Math.max(0,Math.max(b.lo,fl)+diff)}–${Math.max(b.hi,fl)+diff}` : (isAtk?e.atk:e.def);
   const tipo=CM_TIPO[b.tag]||'toque';
   const label=`${b.n}, ${TAGNAME[b.tag]}, ${v} de ${isAtk?'ataque':'defesa'}${b.risk?', carta de risco':''}${order?`, selecionada ${order}ª`:''}`;
-  return `<button class="er-cm er-cm--${tipo}${b.risk?' er-cm--risco':''}${dim?' er-cm--esmaecida':''}${destaque?' er-cm--destaque':''}" type="button" data-id="${c.id}" ${dis?'disabled':''} aria-pressed="${!!order}" aria-label="${label}">`
+  return `<button class="er-cm er-cm--${tipo}${b.risk?' er-cm--risco':''}${dim?' er-cm--esmaecida':''}${destaque?' er-cm--destaque':''}" type="button" data-id="${c.id}" ${dis?'disabled':''} aria-pressed="${!!order}" aria-label="${label}"${tecla?` title="Tecla ${tecla}" aria-keyshortcuts="${tecla}"`:''}>`
     +`<span class="er-cm__faixa"><img src="/icones/tipo-${tipo}.svg" alt="" width="18" height="18">${b.risk?'<span class="er-cm__risco">risco</span>':''}</span>`
     +`<span class="er-cm__corpo"><span class="er-cm__tipo">${TAGNAME[b.tag]}</span><span class="er-cm__nome">${b.n}</span><span class="er-cm__desc">${b.d}</span>`
     +`<span class="er-cm__val"><span class="er-cm__num${b.risk?' er-cm__num--faixa':''}">${v}</span><span class="er-cm__rot${isAtk?'':' er-cm__rot--def'}">${isAtk?'ATQ':'DEF'}</span>`
     +`${diff?`<span class="er-cm__bonus${diff<0?' er-cm__bonus--menos':''}">${diff>0?'+':'−'}${Math.abs(diff)}</span>`:''}</span></span>`
-    +`${order?`<span class="er-cm__ordem" aria-hidden="true">${order}</span>`:''}</button>`;
+    +`${order?`<span class="er-cm__ordem" aria-hidden="true">${order}</span>`:''}${tecla?`<span class="er-cm__tecla" aria-hidden="true">${tecla}</span>`:''}</button>`;
 }
 /* Combos possíveis nesta mão (B03, ChipCombo): ordem fixa da tabela do Como jogar, nunca por valor (não é dica de jogada) */
 const ORDEM_COMBOS=['Tiki-taka','Cabeçada','Jogo Bonito','Ensaiada','Contra-ataque','Pintou um quadro','Tabela e finaliza'];
@@ -909,11 +915,11 @@ function renderMatch(){
         <div class="er-pv__conta">Pode ir com tudo para o ataque</div>`}
       </div>
     </section>
-    <div class="er-v er-mao3" id="hand">${M.hand.map(c=>{ const o=order.indexOf(c.id)+1; return maoCartaHTML(c,o,!o&&order.length>=3,M.over,destaqueIds.has(c.id)); }).join('')}</div>
+    <div class="er-v er-mao3" id="hand">${M.hand.map((c,i)=>{ const o=order.indexOf(c.id)+1; return maoCartaHTML(c,o,!o&&order.length>=3,M.over,destaqueIds.has(c.id),i<9?i+1:0); }).join('')}</div>
     <div class="dock"><div class="er-v er-dock">
-      <button class="er-btn er-btn--primario er-btn--empilhado" id="play" type="button" ${M.over||!cards.length?'disabled':''}>Jogar lance<span class="er-btn__sub">${summary}</span></button>
-      <button class="er-btn er-btn--secundario er-btn--compacto" id="sub" type="button" ${M.over||!cards.length||M.subs<=0?'disabled':''} title="Troca as cartas selecionadas por novas sem gastar o lance">Trocar (${M.subs})</button>
-      ${cards.length?'<button class="er-btn er-btn--fantasma er-btn--compacto" id="clr" type="button" aria-label="Limpar seleção">Limpar</button>':'<span></span>'}
+      <button class="er-btn er-btn--primario er-btn--empilhado" id="play" type="button" ${M.over||!cards.length?'disabled':''} title="Jogar lance (tecla Enter)" aria-keyshortcuts="Enter">Jogar lance<kbd>Enter</kbd><span class="er-btn__sub">${summary}</span></button>
+      <button class="er-btn er-btn--secundario er-btn--compacto" id="sub" type="button" ${M.over||!cards.length||M.subs<=0?'disabled':''} title="Troca as cartas selecionadas por novas sem gastar o lance (tecla T)" aria-keyshortcuts="T">Trocar (${M.subs})<kbd>T</kbd></button>
+      ${cards.length?'<button class="er-btn er-btn--fantasma er-btn--compacto" id="clr" type="button" aria-label="Limpar seleção" title="Limpar seleção (tecla Esc)" aria-keyshortcuts="Escape">Limpar<kbd>Esc</kbd></button>':'<span></span>'}
       <span class="er-dock__info">Deck: ${M.draw.length} · descarte: ${M.disc.length}</span>
     </div></div>
     ${combos.length?`<section class="er-v er-combos"><span class="er-hud-rotulo">Combos possíveis nesta mão</span><div class="er-chips">${combos.map(a=>chipComboHTML(a, ev.combo===a.nome)).join('')}</div></section>`:''}
@@ -934,6 +940,28 @@ function renderMatch(){
   encaixarNomes();
   tutRender();
 }
+/* ===================== ATALHOS DE TECLADO (B28) =====================
+   1 a 7 escolhem a carta, Enter joga, T troca, Esc limpa, Espaço (ou Enter/Esc) pula a revelação.
+   Só na partida, sem janela aberta por cima e fora de campos de texto. */
+function tecladoNaPartida(e){
+  if(e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return;
+  const alvo=e.target, tag=alvo && alvo.tagName;
+  if(tag==='INPUT' || tag==='TEXTAREA' || tag==='SELECT' || (alvo && alvo.isContentEditable)) return;
+  const aberta=['guide','welcome','rankModal'].some(id=>{ const el=document.getElementById(id); return el && !el.hidden; });
+  if(aberta) return;
+  if(REVEAL.busy){ if(e.key===' '||e.key==='Enter'||e.key==='Escape'){ e.preventDefault(); const rv=document.getElementById('reveal'); if(rv) rv.click(); } return; }
+  if(!M || M.over || !document.getElementById('hand')) return;
+  const k=e.key;
+  if(/^[1-9]$/.test(k)){ const c=M.hand[+k-1]; if(!c) return; e.preventDefault();
+    if(M.sel.has(c.id)) M.sel.delete(c.id); else if(M.sel.size<3) M.sel.add(c.id); else return;
+    M.destaque=null; renderMatch(); tutEvent('select'); const b=document.querySelector(`#hand .er-cm[data-id="${c.id}"]`); if(b) b.focus({preventScroll:true}); return; }
+  if(k==='Enter'){ if(alvo && alvo.tagName==='BUTTON' && alvo.id!=='play' && !alvo.classList.contains('er-cm')) return; // Enter noutro botão focado faz o que o botão faz; numa carta, joga o lance
+    if(M.sel.size){ e.preventDefault(); playBlock(); } return; }
+  if(k==='t'||k==='T'){ if(M.sel.size && M.subs>0){ e.preventDefault(); substitute(); } return; }
+  if(k==='Escape'){ if(M.sel.size){ e.preventDefault(); M.sel.clear(); M.destaque=null; renderMatch(); } return; }
+}
+document.addEventListener('keydown', tecladoNaPartida);
+
 /* ===================== REVELAÇÃO DO LANCE ===================== */
 var REVEAL={busy:false};
 var FAST_REVEAL=false;
@@ -958,7 +986,7 @@ function runReveal(d, done){
     <div class="er-rv__grande" id="rvBig" hidden></div>
     <p class="er-rv__pular">Toque ou aperte Enter para pular</p></div>`;
   el.hidden=false; el.onclick=()=>{ skipped=true; finish(); };
-  el.tabIndex=-1; el.onkeydown=e=>{ if(['Enter',' ','Escape'].includes(e.key)){ e.preventDefault(); skipped=true; finish(); } }; try{ el.focus({preventScroll:true}); }catch(e){}
+  el.tabIndex=-1; el.onkeydown=e=>{ if(['Enter',' ','Escape'].includes(e.key)){ e.preventDefault(); e.stopPropagation(); skipped=true; finish(); } }; try{ el.focus({preventScroll:true}); }catch(e){}
   const count=(node,to,ms)=>{ if(!node) return; const t0=performance.now(); const step=t=>{ const k=Math.min(1,(t-t0)/(reduce?1:ms)); node.textContent=Math.round(to*k); if(k<1&&!skipped) requestAnimationFrame(step); }; requestAnimationFrame(step); };
   const fillTo=(row,v,sc)=>{ const f=row.querySelector('.er-rv__fill'); if(!f) return; requestAnimationFrame(()=>{ f.style.width=pc(v,sc); }); };
   // estado da linha: ok (verde), frio (seu ataque parado), mal (gol deles), idle; o resultado sempre escrito
