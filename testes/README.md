@@ -5,7 +5,7 @@ Testes em Node puro, sem dependências. Carregam a regra do jogo direto de `src/
 ```bash
 node testes/sorteios.test.js    # cartas de risco e pênaltis seguem a semente; o motor não usa Math.random
 node testes/campanha.test.js    # mesma semente + mesmas escolhas = mesma campanha, lance a lance (com pênaltis)
-node testes/pontuacao.test.js   # pontos do ranking: 500 + 1.000 por vitória + 10 por gol de saldo + 1 por gol, igual ao firestore.rules
+node testes/pontuacao.test.js   # pontos do B02 (500 + 1.000 por vitória + espetáculo 0..999), categorias do lance e a regra do firestore.rules
 ```
 
 Os três terminam com `TODOS OS TESTES PASSARAM`. Rode antes de abrir um pull request que mexa em sorteio, regra ou pontuação.
