@@ -4,7 +4,9 @@ Publica o jogo no **Firebase Hosting**, o serviço de sites estáticos do Google
 
 ```
 esquadrao-raiz-gcp/
-├── src/index.html                  ← o jogo inteiro
+├── src/index.html                  ← a tela do jogo (HTML, CSS e JS)
+├── src/motor.js                    ← a regra do jogo: dados, sorteio com semente e pontuação, sem tela
+├── testes/                         ← testes em Node (node testes/<nome>.test.js)
 ├── firebase.json                   ← cache, cabeçalhos de segurança, rotas
 ├── firestore.rules                 ← regras de segurança do ranking
 ├── .firebaserc                     ← ID do seu projeto (editar)
