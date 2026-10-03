@@ -12,8 +12,8 @@ service cloud.firestore {
       allow list: if request.query.limit <= 300;
 
       allow create: if
-        request.resource.data.keys().hasOnly(['team','score','stage','champion','gf','ga','craques','createdAt','seed']) &&
-        request.resource.data.keys().hasAll(['team','score','stage','champion','gf','ga','craques','createdAt']) &&
+        request.resource.data.keys().hasOnly(['team','score','stage','champion','gf','ga','golaco','pintura','espetaculo','maiorLance','temporada','craques','createdAt','seed']) &&
+        request.resource.data.keys().hasAll(['team','score','stage','champion','gf','ga','golaco','pintura','espetaculo','maiorLance','temporada','craques','createdAt']) &&
 
         request.resource.data.team is string &&
         request.resource.data.team.size() >= 1 &&
@@ -31,11 +31,36 @@ service cloud.firestore {
         // cada vitória exige no mínimo empatar o jogo, então não dá para ganhar tomando muito mais gols do que fez
         request.resource.data.ga <= request.resource.data.gf + 6 &&
 
-        // a pontuação precisa bater com a fórmula do jogo
+        // temporada do ranking (B02, D-B02-1): a fórmula de pontos mudou na temporada 1
+        request.resource.data.temporada is int && request.resource.data.temporada == 1 &&
+
+        // categorias dos gols (D5): cada gol numa categoria só
+        request.resource.data.golaco is int && request.resource.data.golaco >= 0 &&
+        request.resource.data.pintura is int && request.resource.data.pintura >= 0 &&
+        request.resource.data.golaco + request.resource.data.pintura <= request.resource.data.gf &&
+
+        // maior lance: fora da soma de pontos, com limite largo
+        request.resource.data.maiorLance is int &&
+        request.resource.data.maiorLance >= 0 && request.resource.data.maiorLance <= 9999 &&
+
+        // espetáculo = 10 × saldo + 5 × gol + 20 × golaço + 50 × pintura, limitado a 0..999
+        // (escrito como gf × 5 + golaço × 15 + pintura × 45, porque golaços e pinturas já estão em gf)
+        request.resource.data.espetaculo is int &&
+        request.resource.data.espetaculo >= 0 && request.resource.data.espetaculo <= 999 &&
+        (
+          request.resource.data.espetaculo == (request.resource.data.gf - request.resource.data.ga) * 10
+            + request.resource.data.gf * 5 + request.resource.data.golaco * 15 + request.resource.data.pintura * 45
+          || ((request.resource.data.gf - request.resource.data.ga) * 10
+            + request.resource.data.gf * 5 + request.resource.data.golaco * 15 + request.resource.data.pintura * 45 < 0
+            && request.resource.data.espetaculo == 0)
+          || ((request.resource.data.gf - request.resource.data.ga) * 10
+            + request.resource.data.gf * 5 + request.resource.data.golaco * 15 + request.resource.data.pintura * 45 > 999
+            && request.resource.data.espetaculo == 999)
+        ) &&
+
+        // a pontuação precisa bater com a fórmula do jogo (B02): 500 + 1.000 por vitória + espetáculo
         request.resource.data.score is int &&
-        request.resource.data.score == 500 + request.resource.data.stage * 1000
-          + (request.resource.data.gf - request.resource.data.ga) * 10
-          + request.resource.data.gf &&
+        request.resource.data.score == 500 + request.resource.data.stage * 1000 + request.resource.data.espetaculo &&
 
         request.resource.data.craques is list &&
         request.resource.data.craques.size() >= 1 && request.resource.data.craques.size() <= 5 &&

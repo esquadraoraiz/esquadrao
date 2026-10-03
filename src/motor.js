@@ -41,6 +41,12 @@ const PRICE = {chutefora:3,bicicleta:4,falta:4,elastico:4,carrinho:3,cera:3,lanc
 /* Craques: efeitos por carta (card) e por jogada (play).
    r = raridade (L lendário, R raro, C comum), calculada pelo Índice Raiz da planilha de craques; fact = fato real da figurinha. */
 const BAL={prize:8}; // prêmio base por vitória (calibrado na simulação)
+/* Categorias do lance (D5): Gol ≥ 1× a zaga, Golaço ≥ 2×, Pintura ≥ 3×, sempre contra a zaga de ANTES do gol.
+   Prêmio extra na próxima janela (só se vencer o jogo): Golaço +R$ 2, Pintura +R$ 5.
+   Pontos do ranking (B02): 500 + 1.000 por vitória + espetáculo, que fica entre 0 e 999. */
+const CAT={golaco:2, pintura:3};
+const CAT_PREMIO={golaco:2, pintura:5};
+const PONTOS={largada:500, vitoria:1000, saldo:10, gol:5, golaco:20, pintura:50, tetoEspetaculo:999};
 const RAR={L:{n:'Lendário',w:1,p:[9,11]},R:{n:'Raro',w:2,p:[7,9]},C:{n:'Comum',w:3,p:[5,7]}};
 function wsample(r, arr, n){ const pool=arr.slice(), out=[];
   while(out.length<n && pool.length){ const tot=pool.reduce((a,c)=>a+RAR[c.r||'C'].w,0); let x=r()*tot, i=0;
@@ -270,9 +276,12 @@ function jogarLance(G, M, cards){
   M.extra=Math.min(1, cards.reduce((a,c)=>a+(CARDS[c.t].extra||0),0)); // mão de no máximo 7 cartas
   const ids=new Set(cards.map(c=>c.id));
   M.hand=M.hand.filter(c=>!ids.has(c.id)); M.disc.push(...cards);
+  // categoria do lance: null sem ataque; 'defendeu' quando a zaga segurou; gol de barriga é sempre 'gol'
+  h.ataque = ev.hasAtk ? ev.total : 0; h.zaga = zagaAntes;
+  h.cat = !ev.hasAtk ? null : !h.g ? 'defendeu' : barriga ? 'gol' : ev.total>=zagaAntes*CAT.pintura ? 'pintura' : ev.total>=zagaAntes*CAT.golaco ? 'golaco' : 'gol';
   M.hist[M.block]=h;
   M.block++;
-  return {ev, rolls, h, gol:h.g, conc:h.c, barriga, trave, golaco: h.g && ev.total>=zagaAntes*1.5, zagaAntes, zagaDepois:M.zaga, intent, cera, pressao};
+  return {ev, rolls, h, gol:h.g, conc:h.c, barriga, trave, cat:h.cat, zagaAntes, zagaDepois:M.zaga, intent, cera, pressao};
 }
 
 /* ===================== PÊNALTIS ===================== */
@@ -302,10 +311,14 @@ function cobranca(G, M, P, canto){
 }
 
 /* ===================== RESULTADO, PRÊMIO E JANELA ===================== */
+// Prêmio extra das categorias no jogo (Golaço e Pintura), pago na janela se vencer
+function premioCategorias(M){
+  return M.hist.reduce((a,h)=>a+((h&&CAT_PREMIO[h.cat])||0),0);
+}
 function premio(G, M, pens){
   let prize = BAL.prize + Math.min(M.my,3) + (pens?0:1);
   const gb = G.craques.find(c=>c.cash); if(gb) prize += gb.cash*M.my;
-  return prize;
+  return prize + premioCategorias(M);
 }
 // Registra o jogo na campanha e paga o prêmio se ganhou. Devolve o prêmio (0 na derrota).
 function registrarResultado(G, M, win, pens){
@@ -331,15 +344,30 @@ function ofertasJanela(G, rolls, cOffers, kOffers){
   };
 }
 // Pontos do ranking: 500 + 1.000 por vitória + 10 por gol de saldo + 1 por gol. A mesma fórmula está em firestore.rules.
+// Contagem das categorias e do maior lance a partir do histórico dos jogos (G.results[].hist)
+function lancesDaCampanha(G){
+  let golaco=0, pintura=0, maiorLance=0;
+  for(const r of G.results) for(const h of (r.hist||[])){ if(!h) continue;
+    if(h.cat==='golaco') golaco++; if(h.cat==='pintura') pintura++; if((h.ataque||0)>maiorLance) maiorLance=h.ataque; }
+  return {golaco, pintura, maiorLance};
+}
+/* Pontos do ranking (B02): 500 + 1.000 por vitória + espetáculo.
+   espetáculo = 10 × saldo + 5 × gol + 20 × golaço + 50 × pintura, limitado a 0..999 (cada gol numa categoria só).
+   Pênaltis contam como vitória, mas os gols da disputa não entram (gf e ga são do tempo normal).
+   A mesma conta está em firestore.rules. O maior lance fica fora da soma. */
 function pontuacao(G){
   const wins=G.results.filter(r=>r.win).length;
   const gf=G.results.reduce((a,r)=>a+(r.gf||0),0), ga=G.results.reduce((a,r)=>a+(r.ga||0),0);
-  return {stage:wins, champion:wins>=4, gf, ga, score:500+wins*1000+(gf-ga)*10+gf};
+  const {golaco, pintura, maiorLance}=lancesDaCampanha(G);
+  const gols=gf-golaco-pintura;
+  const bruto=PONTOS.saldo*(gf-ga) + PONTOS.gol*gols + PONTOS.golaco*golaco + PONTOS.pintura*pintura;
+  const espetaculo=Math.max(0, Math.min(PONTOS.tetoEspetaculo, bruto));
+  return {stage:wins, champion:wins>=4, gf, ga, golaco, pintura, espetaculo, maiorLance, score:PONTOS.largada+PONTOS.vitoria*wins+espetaculo};
 }
 
 return {
   // dados
-  CARDS, START_DECK, SHOP_POOL, PRICE, BAL, RAR, CRAQUES, TEAMS, CONDITIONS,
+  CARDS, START_DECK, SHOP_POOL, PRICE, BAL, RAR, CRAQUES, TEAMS, CONDITIONS, CAT, CAT_PREMIO, PONTOS,
   // sorteio
   hash32, mulberry32, rng, rpick, rri, rshuffle, wsample,
   // campanha
@@ -350,7 +378,7 @@ return {
   // pênaltis
   novaDisputa, pensDecided, penSig, cobranca,
   // resultado
-  premio, registrarResultado, ofertasJanela, pontuacao
+  premio, premioCategorias, registrarResultado, ofertasJanela, lancesDaCampanha, pontuacao
 };
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = Motor;
