@@ -70,16 +70,6 @@ h2{font-size:clamp(24px,5vw,34px)}
 .muted{color:var(--tinta-2)}
 
 /* Placar */
-.board{display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;border-radius:4px;overflow:hidden;background:var(--tinta)}
-.side{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;min-width:0}
-.side.me{background:var(--canarinho);color:var(--tinta);box-shadow:inset 0 -5px 0 var(--anil)}
-.side.op{background:var(--opp);color:var(--oppInk);box-shadow:inset 0 -5px 0 var(--opp2);flex-direction:row-reverse}
-.sname{font-family:var(--f-display);font-size:18px;line-height:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sgoals{font-family:var(--f-display);font-size:40px;line-height:1;font-variant-numeric:tabular-nums}
-.minute{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 14px;color:var(--canarinho);font-family:var(--f-mono)}
-.minute b{font-size:26px;line-height:1}
-.minute small{font-size:10px;letter-spacing:.1em;color:rgba(245,247,239,.6)}
-.cond{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .tag{display:inline-block;font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:3px;border:1px solid currentColor}
 .tag.boss{background:var(--perigo);color:#fff;border-color:var(--perigo)}
 
@@ -221,16 +211,6 @@ h2{font-size:clamp(24px,5vw,34px)}
 .rankstatus.err{color:var(--perigo)}
 
 /* ===== Partida v2 ===== */
-.timeline{list-style:none;margin:-6px 0 0;padding:0;display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
-.timeline li{display:flex;flex-direction:column;align-items:center;gap:3px}
-.timeline i{display:block;width:100%;height:8px;border-radius:2px;background:rgba(245,247,239,.18)}
-.timeline span{font-family:var(--f-mono);font-size:10px;color:rgba(245,247,239,.6)}
-.timeline li.now i{background:var(--canarinho);animation:pulse 1.4s ease-in-out infinite}
-.timeline li.now span{color:var(--canarinho)}
-.timeline li.n i{background:rgba(245,247,239,.45)}
-.timeline li.g i{background:var(--gol)}
-.timeline li.c i{background:var(--perigo)}
-.timeline li.gc i{background:linear-gradient(90deg,var(--gol) 50%,var(--perigo) 50%)}
 @keyframes pulse{50%{opacity:.45}}
 
 .riskb{font-style:normal;background:var(--canarinho);color:var(--tinta);border-radius:3px;padding:0 4px;margin-left:4px;font-size:9px}
@@ -249,7 +229,6 @@ h2{font-size:clamp(24px,5vw,34px)}
 .btn.play{display:flex;flex-direction:column;align-items:center;line-height:1.05;gap:3px}
 .btn.play small{font-family:var(--f-mono);font-size:11px;font-weight:500;opacity:.8}
 .btn.ghostbtn{background:transparent;color:var(--cal);box-shadow:none;border:1px solid rgba(245,247,239,.45);font-size:14px;padding:10px 12px}
-.sgoals.bump{animation:bump .6s ease}
 @keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.45)}100%{transform:scale(1)}}
 
 .fx{position:fixed;left:50%;top:22%;transform:translate(-50%,-10px) scale(.92);z-index:40;pointer-events:none;opacity:0;
@@ -307,31 +286,7 @@ h2{font-size:clamp(24px,5vw,34px)}
 .linkbox code{font-family:var(--f-mono);font-size:13px;white-space:nowrap;color:var(--tinta)}
 a.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
 .reveal{position:fixed;inset:0;z-index:60;background:rgba(6,24,14,.78);display:flex;align-items:center;justify-content:center;padding:16px;cursor:pointer}
-.rv-card{background:var(--cal);color:var(--tinta);border-radius:8px;width:min(460px,100%);padding:18px;display:flex;flex-direction:column;gap:14px;box-shadow:0 10px 0 rgba(0,0,0,.25)}
-.rv-min{font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;color:var(--tinta-2);text-align:center}
-.rv-row{display:flex;flex-direction:column;gap:6px;padding:10px 12px;border-radius:6px;border:1.5px solid var(--papel);transition:opacity .3s ease,border-color .2s ease}
-.rv-row.ok{border-color:var(--gol)} .rv-row.bad{border-color:var(--perigo)}
-.rv-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.rv-lbl{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--tinta-2)}
-.rv-res{font-family:var(--f-display);font-size:18px}
-.rv-res.ok{color:var(--gol)} .rv-res.bad{color:var(--perigo)} .rv-res.idle{color:var(--tinta-2);font-size:14px}
-.rv-dice{display:flex;gap:10px;flex-wrap:wrap;font-size:13px}
-.rv-dice b{display:inline-block;min-width:2em;text-align:center;font-family:var(--f-display);font-weight:400;font-size:20px;background:var(--canarinho);border-radius:4px;padding:0 4px}
-.rv-dice b.max{background:var(--gol);color:#fff} .rv-dice b.zero{background:var(--perigo);color:#fff}
-.rv-track{position:relative;height:14px;border-radius:999px;background:var(--papel);overflow:hidden}
-.rv-target{position:absolute;left:0;top:0;bottom:0;background:#c4ccbf;border-radius:999px}
-.rv-track.threat .rv-target{background:rgba(216,67,47,.45)}
-.rv-fill{position:absolute;left:0;top:3px;bottom:3px;border-radius:999px;background:var(--anil);transition:width .9s cubic-bezier(.2,.8,.2,1)}
-.rv-track.threat .rv-fill{background:var(--tinta)}
-.rv-row.ok .rv-fill{background:var(--gol)}
-.rv-mark{position:absolute;top:0;bottom:0;width:3px;margin-left:-1.5px;background:var(--tinta)}
-.rv-nums{font-size:13px;color:var(--tinta-2)} .rv-nums b{color:var(--tinta);font-size:16px}
-.rv-big{min-height:0;text-align:center;display:flex;flex-direction:column;gap:2px}
-.rv-big b{font-family:var(--f-display);font-weight:400;font-size:clamp(30px,9vw,46px);line-height:1;animation:pop .35s ease}
-.rv-big span{font-family:var(--f-mono);font-size:12px;color:var(--tinta-2)}
-.rv-big.goal b{color:var(--gol)} .rv-big.conc b{color:var(--perigo)} .rv-big.save b{color:var(--tinta)} .rv-big.none b{color:var(--tinta-2);font-size:26px}
 @keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
-.rv-skip{margin:0;text-align:center;font-size:11px;color:var(--tinta-2)}
 .howbtn[aria-pressed="false"]{opacity:.6}
 .daily-cta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;background:var(--tinta);color:var(--cal);border-radius:4px;padding:12px;margin:-4px -4px 4px}
 .pick-call{background:var(--canarinho);color:var(--tinta);border-radius:4px;padding:10px 12px;font-size:15px;scroll-margin-top:12px}
@@ -396,9 +351,6 @@ button,.card,.craque{touch-action:manipulation;-webkit-tap-highlight-color:trans
   .paper{padding:12px}
   .intent{grid-template-columns:1fr 1fr!important;gap:8px}
   .meter{padding:8px 10px}
-  .side{padding:8px 10px}
-  .sname{font-size:13px;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.05}
-  .minute{padding:6px 8px}.minute b{font-size:20px}
   .meter .big{font-size:26px}
   .meter .vs{font-size:11px;line-height:1.3}
   .combo{font-size:15px;min-height:18px}
@@ -416,7 +368,6 @@ button,.card,.craque{touch-action:manipulation;-webkit-tap-highlight-color:trans
   h1{font-size:30px}
   .tag{font-size:10px}
   .album{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .sgoals{font-size:32px}.sname{font-size:14px}
   .intent{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -453,7 +404,7 @@ body.has-consent{padding-bottom:calc(48px + var(--consent-h,0px))}
 body.has-consent .dock{bottom:var(--consent-h,0px)}
 .linkbtn{background:none;border:0;padding:0;color:inherit;font-size:inherit;text-decoration:underline;text-underline-offset:2px}
 </style>
-<link rel="stylesheet" href="/visual.css?v=b03">
+<link rel="stylesheet" href="/visual.css?v=b04">
 
 <div class="wrap">
   <header class="mast">
@@ -553,7 +504,7 @@ body.has-consent .dock{bottom:var(--consent-h,0px)}
       <label class="optout" for="welOff"><input type="checkbox" id="welOff">Não mostrar esta mensagem de novo</label>
     </div>
   </div>
-  <div class="reveal" id="reveal" hidden role="status" aria-live="assertive"></div>
+  <div class="reveal er-v" id="reveal" hidden role="status" aria-live="assertive"></div>
   <div class="tut" id="tut" hidden><div class="tut-spot" id="tutSpot"></div><div class="tut-tip" id="tutTip" role="dialog" aria-live="polite"></div></div>
   <div class="guide" id="rankModal" hidden role="dialog" aria-modal="true" aria-labelledby="rankTitle">
     <div class="guide-sheet">
@@ -582,6 +533,7 @@ body.has-consent .dock{bottom:var(--consent-h,0px)}
   <div class="cbtns"><button class="c-ok" id="consentOk" type="button">Ok</button><button class="c-nao" id="consentNao" type="button">Não</button></div>
 </div>
 
+<script src="/design-system.js?v=b04"></script>
 <script src="/motor.js?v=b02"></script>
 <script>
 /* Compatibilidade com celulares antigos (iOS < 15.4, Chrome < 92) */
@@ -775,6 +727,80 @@ function zagaFor(){ return Motor.zagaFor(G, M); }
 function evaluate(cards, mode){ return Motor.evaluate(G, M, cards, mode); }
 function cardEff(c){ return Motor.cardEff(G, M, c); }
 const COMBO_RECIPE={'Tiki-taka':'3 toques','Jogo Bonito':'2 dribles','Cabeçada':'Cruzamento + Chute','Ensaiada':'Falta + Chute ou Cruzamento','Contra-ataque':'Defesa + Lançamento','Pintou um quadro':'Drible + Chute','Tabela e finaliza':'Toque + Chute'};
+/* Clubes por cor (D8, D13, D29): código de camisa do catálogo do GD (B17 parte 1) e clube de cada craque (parte 2).
+   Só para a tela: faixa do placar e selo de camisa no elenco. Nunca escudo; nome do clube só em texto de interface. */
+const CLUBES={
+  'flamengo':{curto:'Flamengo',padrao:'listras-h',c1:'vermelho',c2:'preto'},
+  'fluminense':{curto:'Fluminense',padrao:'listras-v',c1:'grena',c2:'verde',gola:'branco'},
+  'vasco':{curto:'Vasco',padrao:'faixa-d',c1:'preto',c2:'branco'},
+  'botafogo':{curto:'Botafogo',padrao:'listras-v',c1:'preto',c2:'branco'},
+  'corinthians':{curto:'Corinthians',padrao:'lisa',c1:'branco',c2:'preto',gola:'preto'},
+  'palmeiras':{curto:'Palmeiras',padrao:'lisa',c1:'verde-escuro',c2:'branco'},
+  'sao-paulo':{curto:'São Paulo',padrao:'faixa-h',c1:'branco',c2:'vermelho',gola:'preto'},
+  'santos':{curto:'Santos',padrao:'lisa',c1:'branco',c2:'preto'},
+  'guarani':{curto:'Guarani',padrao:'lisa',c1:'verde',c2:'branco'},
+  'atletico-mg':{curto:'Atlético-MG',padrao:'listras-v',c1:'preto',c2:'branco'},
+  'cruzeiro':{curto:'Cruzeiro',padrao:'lisa',c1:'azul',c2:'branco'},
+  'internacional':{curto:'Inter',padrao:'lisa',c1:'vermelho',c2:'branco'},
+  'athletico-pr':{curto:'Athletico-PR',padrao:'listras-h',c1:'vermelho',c2:'preto'},
+  'bahia':{curto:'Bahia',padrao:'faixa-h',c1:'branco',c2:'azul',gola:'vermelho'}
+};
+const CRAQUE_CLUBE={zico:'flamengo',romario:'vasco',edmundo:'vasco',ceni:'sao-paulo',falcao:'internacional',junior:'flamengo',dada:'atletico-mg',marcelinho:'corinthians',alex:'cruzeiro',dinamite:'vasco',fred:'fluminense',marcos:'palmeiras',gabigol:'flamengo',ronaldinho:'atletico-mg',renato:'fluminense',edilson:'corinthians',socrates:'corinthians',rivellino:'fluminense',ronaldo:'corinthians',neymar:'santos',petkovic:'flamengo',evair:'palmeiras',rai:'sao-paulo'};
+const CRAQUE_CURTO={dada:'Dadá',marcelinho:'Marcelinho',dinamite:'Dinamite',renato:'Renato',ceni:'Ceni'};
+const TIME_CLUBE={'Guarani':'guarani','Bahia':'bahia','Athletico-PR':'athletico-pr','Atlético-MG':'atletico-mg','Vasco':'vasco','Fluminense':'fluminense','Corinthians':'corinthians','Santos':'santos','São Paulo':'sao-paulo','Internacional':'internacional','Palmeiras':'palmeiras','Botafogo':'botafogo','Flamengo':'flamengo','Cruzeiro':'cruzeiro'};
+// Raridade do jogo -> D11 (B17 parte 2): Lendário -> Lenda, Raro -> Ídolo, Comum -> Comum
+const RARIDADE_D11={L:{cls:'lenda',n:'Lenda'},R:{cls:'idolo',n:'Ídolo'},C:{cls:'comum',n:'Comum'}};
+// "Vasco 1997" -> {curto:'Vasco', ano:'1997', clube}
+function timeDividido(t){ const m=/^(.*) (\d{4})$/.exec(t.n||''); const nome=m?m[1]:(t.n||''), id=TIME_CLUBE[nome]; return {curto:id?CLUBES[id].curto:nome, ano:m?m[2]:'', clube:id?CLUBES[id]:null}; }
+const corCamisa=c=>`var(--camisa-${c})`;
+function seloCamisa(cl, rotulo){
+  if(!cl) return '';
+  return `<span class="er-clube er-clube--${cl.padrao}${cl.gola?' er-clube--gola':''}" style="--c1:${corCamisa(cl.c1)};--c2:${corCamisa(cl.c2)}${cl.gola?`;--c3:${corCamisa(cl.gola)}`:''}" role="img" aria-label="camisa do ${esc(rotulo)}"><b><i></i></b></span>`;
+}
+// Placar versão A (D29): nome curto + ano + faixa de 6px nas cores de camisa
+function placarHTML(t){
+  const d=timeDividido(t), cl=d.clube, listras=cl && /^listras/.test(cl.padrao);
+  const minuto = M.over ? 'FIM' : BLOCKS[M.block].split('–')[1], fase=stageName(G.stage);
+  const faixaDeles = cl ? `<span class="er-pl__faixa${listras?' er-pl__faixa--listras':''}" style="--c1:${corCamisa(cl.c1)};--c2:${corCamisa(cl.c2)}"></span>`
+                        : `<span class="er-pl__faixa" style="--c1:${t.c1};--c2:${t.c2}"></span>`;
+  return `<div class="er-v er-pl pl-placar" role="img" aria-label="${esc(teamName())} ${M.my}, ${esc(t.n)} ${M.op}, ${minuto}, ${esc(fase)}">
+      <div class="er-pl__lado"><span class="er-pl__time"><span class="er-pl__nome er-pl__nome--seu">${esc(teamName())}</span><span class="er-pl__ano">seu time</span></span><span class="er-pl__gols${M.bump&&M.bump.g?' er-pl__gols--salto':''}">${M.my}</span><span class="er-pl__faixa" style="--c1:var(--amarelo-cartao);--c2:#1f62bf"></span></div>
+      <div class="er-pl__meio">${minuto}<small>${esc(fase)}</small></div>
+      <div class="er-pl__lado er-pl__lado--deles"><span class="er-pl__time"><span class="er-pl__nome">${esc(d.curto)}</span><span class="er-pl__ano">${esc(d.ano)}</span></span><span class="er-pl__gols${M.bump&&M.bump.c?' er-pl__gols--salto':''}">${M.op}</span>${faixaDeles}</div>
+    </div>`;
+}
+// Linha do tempo: forma + cor (● gol, ●● golaço, ★ pintura, ○ gol deles, ●○ os dois, – nada)
+function linhaDoTempoHTML(){
+  const rot={gol:'gol seu',golaco:'golaço seu',pintura:'pintura sua',sofrido:'gol deles',dois:'gol dos dois',nada:'sem gol',agora:'lance atual'};
+  const itens=BLOCKS.map((b,i)=>{ const h=M.hist[i], min=b.split('–')[1]; let e='';
+    if(h) e = h.g&&h.c ? 'dois' : h.g ? (h.cat==='pintura'?'pintura':h.cat==='golaco'?'golaco':'gol') : h.c ? 'sofrido' : 'nada';
+    else if(i===M.block && !M.over) e='agora';
+    return {min, e}; });
+  return `<ol class="er-v er-tl tl-linha" aria-label="Lances do jogo: ${itens.map(x=>`${x.min} ${rot[x.e]||'a jogar'}`).join(', ')}">${itens.map(x=>`<li class="${x.e?'er-tl--'+x.e:''}" title="${x.min}: ${rot[x.e]||'a jogar'}"><i aria-hidden="true"></i><span>${x.min}</span></li>`).join('')}</ol>`;
+}
+function etiquetasHTML(t){
+  const e=[];
+  if(t.boss) e.push(`<span class="er-etq er-etq--chefao"><b>★ Chefão</b>${esc(t.boss)}</span>`);
+  if(M.cond) e.push(`<span class="er-etq er-etq--condicao"><b>Condição</b>${esc(M.cond.n)} · ${esc(M.cond.d)}</span>`);
+  e.push(`<span class="er-etq"><b>Destaque deles</b>${esc(t.star)}</span>`);
+  if(M.press&&!M.over) e.push(`<span class="er-etq er-etq--bonus"><b>Pressão alta</b>+${M.press} de ataque neste lance</span>`);
+  if(G.craques.some(k=>k.barriga)&&!M.barrigaUsed&&!M.over) e.push('<span class="er-etq er-etq--bonus"><b>Gol de barriga</b>disponível</span>');
+  if(G.challenge) e.push(`<span class="er-etq"><b>Desafio</b>${esc(G.seed)}</span>`);
+  return `<div class="er-v er-etqs">${e.join('')}</div>`;
+}
+// Ficha do craque no elenco (Elenco): faixa com camisa + clube · era + selo de raridade (D11), nome encaixado, efeito, fato
+function fichaCraqueHTML(c){
+  const rar=RARIDADE_D11[c.r||'C'], cl=CLUBES[CRAQUE_CLUBE[c.id]];
+  const faixa = cl ? c.club.replace(/^[^·]+/, cl.curto+' ') : c.club;
+  return `<article class="er-cf er-cf--${rar.cls}" aria-label="${esc(c.n)}, ${rar.n}. ${esc(c.e)}"><div class="er-cf__faixa">${seloCamisa(cl, cl?cl.curto:'')}<span>${esc(faixa)}</span><span class="er-selo er-selo--glifo er-selo--${rar.cls}" role="img" aria-label="${rar.n}" title="${rar.n}">${rar.n}</span></div>`
+    +`<div class="er-cf__corpo"><span class="er-cf__nome"><span class="er-nome" data-nome="${esc(c.n)}" data-curto="${esc(CRAQUE_CURTO[c.id]||c.n)}" data-passos="17,15,13" data-linhas="1">${esc(c.n)}</span></span><p class="er-cf__efeito">${esc(c.e)}</p>${c.fact?`<p class="er-cf__fato">${esc(c.fact)}.</p>`:''}</div></article>`;
+}
+function elencoHTML(){
+  const fichas=Array.from({length:5},(_,i)=>G.craques[i]?fichaCraqueHTML(G.craques[i]):'<div class="er-vaga">vaga<br>no elenco</div>').join('');
+  return `<div><span class="eyebrow" style="color:rgba(245,247,239,.7)">Seu elenco · ${G.craques.length}/5</span><div class="er-v er-elenco" style="margin-top:6px">${fichas}</div></div>`;
+}
+function encaixarNomes(){ try{ if(window.EsquadraoRaiz){ EsquadraoRaiz.encaixarTodos(app); if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>EsquadraoRaiz.encaixarTodos(app)); } }catch(e){} }
+
 /* Carta da mão no visual novo (B03, MaoDoLance do design system): faixa do tipo só com o glifo, ATQ azul (D4) */
 const CM_TIPO={toque:'toque',lancamento:'lancamento',cruzamento:'cruzamento',chute:'chute',drible:'drible',bola:'falta',defesa:'defesa',catimba:'catimba'};
 function maoCartaHTML(c,order,dim,dis,destaque){
@@ -854,27 +880,11 @@ function renderMatch(){
   const combos = M.over? [] : combosDaMao();
   const destaque = M.destaque && combos.find(a=>a.nome===M.destaque);
   const destaqueIds = new Set(destaque ? destaque.cartas.map(c=>c.id) : []);
-  const timeline = BLOCKS.map((b,i)=>{ const h=M.hist[i]; let cls='', lab='';
-      if(h){ cls = h.g&&h.c?'gc':h.g?'g':h.c?'c':'n'; lab = h.g&&h.c?'gol dos dois':h.g?'gol seu':h.c?'gol deles':'sem gol'; }
-      else if(i===M.block && !M.over){ cls='now'; lab='lance atual'; }
-      return `<li class="${cls}" title="${b}: ${lab||'a jogar'}"><i></i><span>${b.split('–')[1]}</span></li>`; }).join('');
-  const slots = Array.from({length:5},(_,i)=>G.craques[i]?craqueHTML(G.craques[i]):`<div class="slot">vaga<br>no elenco</div>`).join('');
   const summary = !cards.length ? 'Escolha até 3 cartas' : [ev.hasAtk?(goalOk?'gol':maybe?'gol?':'sem gol'):null, M.intent?(defOk?'segura':defMaybe?'segura?':'sofre gol'):null].filter(Boolean).join(' · ');
   app.innerHTML = `
-    <div class="board">
-      <div class="side me"><span class="sname">${esc(teamName())}</span><span class="sgoals ${M.bump&&M.bump.g?'bump':''}">${M.my}</span></div>
-      <div class="minute"><b>${M.over?'FIM':BLOCKS[M.block]}</b><small>${stageName(G.stage).toUpperCase()}</small></div>
-      <div class="side op"><span class="sname">${esc(t.n)}</span><span class="sgoals ${M.bump&&M.bump.c?'bump':''}">${M.op}</span></div>
-    </div>
-    <ol class="timeline" aria-label="Lances do jogo">${timeline}</ol>
-    <div class="cond">
-      ${t.boss?`<span class="tag boss">Chefão · ${esc(t.boss)}</span>`:''}
-      ${M.cond?`<span class="tag" style="color:var(--canarinho)">${esc(M.cond.n)} · ${esc(M.cond.d)}</span>`:''}
-      <span class="tag" style="color:rgba(245,247,239,.8)">Destaque deles: ${esc(t.star)}</span>
-      ${M.press&&!M.over?`<span class="tag" style="color:var(--canarinho)">Pressão alta · +${M.press} de ataque neste lance</span>`:''}
-      ${G.craques.some(k=>k.barriga)&&!M.barrigaUsed&&!M.over?'<span class="tag" style="color:var(--canarinho)">Gol de barriga disponível</span>':''}
-      ${G.challenge?`<span class="tag" style="color:var(--canarinho)">Desafio ${G.seed}</span>`:''}
-    </div>
+    ${placarHTML(t)}
+    ${linhaDoTempoHTML()}
+    ${etiquetasHTML(t)}
     <section class="er-v er-pv" aria-live="polite" aria-label="Previsão do lance">
       <div class="er-pv__q er-pv__q--${atkEst} pv-atk">
         <span class="er-pv__t">Seu ataque</span><span class="er-pv__chip er-pv__chip--${atkEst}">${atkChip}</span>
@@ -901,7 +911,7 @@ function renderMatch(){
       <span class="eyebrow">Narração</span>
       <div class="radio" id="radio">${M.log.slice().reverse().map(l=>`<p class="${l.cls||''}"><span class="m">${l.m}</span>${l.txt}</p>`).join('')}</div>
     </section>
-    <div><span class="eyebrow" style="color:rgba(245,247,239,.7)">Seu elenco · ${G.craques.length}/5</span><div class="album mine" style="margin-top:6px">${slots}</div></div>`;
+    ${elencoHTML()}`;
   app.querySelectorAll('#hand .er-cm').forEach(b=>b.onclick=()=>{
     const id=+b.dataset.id; if(M.sel.has(id)) M.sel.delete(id); else if(M.sel.size<3) M.sel.add(id); else return; M.destaque=null; renderMatch(); tutEvent('select');
   });
@@ -911,6 +921,7 @@ function renderMatch(){
   const s=document.getElementById('sub'); if(s) s.onclick=substitute;
   const c=document.getElementById('clr'); if(c) c.onclick=()=>{ M.sel.clear(); renderMatch(); };
   M.bump=null;
+  encaixarNomes();
   tutRender();
 }
 /* ===================== REVELAÇÃO DO LANCE ===================== */
@@ -923,43 +934,55 @@ function runReveal(d, done){
   REVEAL.busy=true; let skipped=false, finished=false; app.inert=true; // nada embaixo do placar responde durante a revelação
   const finish=()=>{ if(finished) return; finished=true; REVEAL.busy=false; app.inert=false; el.hidden=true; el.onclick=null; el.onkeydown=null; done(); };
   const sleep=ms=>new Promise(r=>setTimeout(r, reduce?Math.min(ms,220):ms));
-  const scaleA=Math.max(d.val,d.zaga,1)*1.15, scaleD=Math.max(d.def,d.intent,1)*1.15;
-  el.innerHTML=`<div class="rv-card">
-    <div class="rv-min">${esc(BLOCKS[Math.max(0,M.block-1)])}</div>
-    ${d.rolls.length?`<div class="rv-dice">${d.rolls.map((r,i)=>`<span>${esc(r.n)} <b id="rvd${i}">?</b></span>`).join('')}</div>`:''}
-    <div class="rv-row" id="rvA"><div class="rv-head"><span class="rv-lbl">Seu ataque</span><span class="rv-res"></span></div>
-      <div class="rv-track"><i class="rv-target" style="width:${(d.zaga/scaleA*100).toFixed(1)}%"></i><i class="rv-fill" style="width:0"></i><b class="rv-mark" style="left:${(d.zaga/scaleA*100).toFixed(1)}%"></b></div>
-      <div class="rv-nums"><b class="rv-count">0</b> contra zaga <b>${d.zaga}</b>${d.combo?` · ${esc(d.combo)}`:''}</div></div>
-    <div class="rv-row" id="rvD" style="opacity:.35"><div class="rv-head"><span class="rv-lbl">Ataque do ${esc(d.opp)}</span><span class="rv-res"></span></div>
-      ${d.intent?`<div class="rv-track threat"><i class="rv-target" style="width:${(d.intent/scaleD*100).toFixed(1)}%"></i><i class="rv-fill" style="width:0"></i><b class="rv-mark" style="left:${(d.intent/scaleD*100).toFixed(1)}%"></b></div>
-      <div class="rv-nums"><b class="rv-count">0</b> de defesa contra ataque <b>${d.intent}</b></div>`:`<div class="rv-nums">Só tocando a bola no meio-campo.</div>`}</div>
-    <div class="rv-big" id="rvBig"></div>
-    <p class="rv-skip">Toque ou aperte Enter para pular</p></div>`;
+  const scaleA=Math.max(d.val,d.zaga,1)*1.15, scaleD=Math.max(d.def,d.intent,1)*1.15, pc=(v,sc)=>Math.min(100,v/sc*100).toFixed(1)+'%';
+  const opp=timeDividido({n:d.opp}).curto, minuto=BLOCKS[Math.max(0,M.block-1)].split('–')[1];
+  el.innerHTML=`<div class="er-rv" id="rvCard">
+    <div class="er-rv__min">${esc(minuto)}</div>
+    ${d.rolls.length?`<div class="er-rv__dados">${d.rolls.map((r,i)=>`<span class="er-dado er-dado--rolando" id="rvdd${i}">${esc(r.n)}<b id="rvd${i}">?</b></span>`).join('')}</div>`:''}
+    <div class="er-rv__linha" id="rvA"><div class="er-rv__cab"><span class="er-rv__rot">Seu ataque</span><span class="er-rv__res"></span></div>
+      <div class="er-rv__trilho"><i class="er-rv__alvo" style="width:${pc(d.zaga,scaleA)}"></i><i class="er-rv__fill" style="width:0"></i><b class="er-rv__marca" style="left:${pc(d.zaga,scaleA)}"></b></div>
+      <div class="er-rv__nums"><b class="er-rv__conta">0</b> contra zaga <b>${d.zaga}</b>${d.combo?` · ${esc(d.combo)}`:''}</div></div>
+    <div class="er-rv__linha er-rv__linha--espera" id="rvD"><div class="er-rv__cab"><span class="er-rv__rot">Ataque do ${esc(d.opp)}</span><span class="er-rv__res"></span></div>
+      ${d.intent?`<div class="er-rv__trilho"><i class="er-rv__alvo" style="width:${pc(d.intent,scaleD)}"></i><i class="er-rv__fill er-rv__fill--def" style="width:0"></i><b class="er-rv__marca er-rv__marca--ameaca" style="left:${pc(d.intent,scaleD)}"></b></div>
+      <div class="er-rv__nums"><b class="er-rv__contad">0</b> de defesa contra ataque <b>${d.intent}</b></div>`:`<div class="er-rv__nums">Só tocando a bola no meio-campo.</div>`}</div>
+    <div class="er-rv__grande" id="rvBig" hidden></div>
+    <p class="er-rv__pular">Toque ou aperte Enter para pular</p></div>`;
   el.hidden=false; el.onclick=()=>{ skipped=true; finish(); };
   el.tabIndex=-1; el.onkeydown=e=>{ if(['Enter',' ','Escape'].includes(e.key)){ e.preventDefault(); skipped=true; finish(); } }; try{ el.focus({preventScroll:true}); }catch(e){}
   const count=(node,to,ms)=>{ if(!node) return; const t0=performance.now(); const step=t=>{ const k=Math.min(1,(t-t0)/(reduce?1:ms)); node.textContent=Math.round(to*k); if(k<1&&!skipped) requestAnimationFrame(step); }; requestAnimationFrame(step); };
-  const fillTo=(row,v,sc)=>{ const f=row.querySelector('.rv-fill'); if(!f) return; requestAnimationFrame(()=>{ f.style.width=Math.min(100,v/sc*100).toFixed(1)+'%'; }); };
-  const setRes=(row,txt,cls)=>{ const r=row.querySelector('.rv-res'); r.textContent=txt; r.className='rv-res '+cls; };
-  const big=(txt,cls,sub)=>{ const b=document.getElementById('rvBig'); b.className='rv-big '+cls; b.innerHTML=`<b>${txt}</b>${sub?`<span>${sub}</span>`:''}`; };
+  const fillTo=(row,v,sc)=>{ const f=row.querySelector('.er-rv__fill'); if(!f) return; requestAnimationFrame(()=>{ f.style.width=pc(v,sc); }); };
+  // estado da linha: ok (verde), frio (seu ataque parado), mal (gol deles), idle; o resultado sempre escrito
+  const setRes=(row,txt,est)=>{ row.querySelector('.er-rv__res').textContent=txt; row.className='er-rv__linha'+(est?' er-rv__linha--'+est:''); };
+  // carimbo grande (Resultado): gol, golaco, pintura, frio, defendeu, sofrido, neutro
+  const carimbo=(txt,tipo,sub,placar)=>{ const b=document.getElementById('rvBig'); b.hidden=false;
+    b.innerHTML=`<div class="er-resultado er-resultado--${tipo} er-resultado--p er-anima${tipo==='pintura'?' er-pisca':''}"><strong>${txt}</strong><span>${sub||''}</span></div>${placar?`<span class="er-rv__placar">${placar}</span>`:''}`; };
+  const tremer=px=>{ if(reduce) return; const c=document.getElementById('rvCard'); if(!c) return; c.classList.remove('er-treme-4','er-treme-8'); void c.offsetWidth; c.classList.add('er-treme-'+px); };
   (async()=>{
     const A=document.getElementById('rvA'), D=document.getElementById('rvD');
     SFX.whistle(1);
     await sleep(350); if(skipped) return;
-    for(let i=0;i<d.rolls.length;i++){ const node=document.getElementById('rvd'+i); const r=d.rolls.at(i);
+    for(let i=0;i<d.rolls.length;i++){ const node=document.getElementById('rvd'+i), dado=document.getElementById('rvdd'+i); const r=d.rolls.at(i);
       for(let k=0;k<7&&!skipped;k++){ node.textContent=Math.floor(Math.random()*(r.hi+1)); SFX.tick(); await sleep(70); }
-      if(skipped) return; node.textContent=r.v; node.className = r.v===r.hi?'max':r.v===0?'zero':''; if(r.v===r.hi) SFX.roar(.5); await sleep(260); }
+      if(skipped) return; node.textContent=r.v; dado.className = 'er-dado'+(r.v===r.hi?' er-dado--max':r.v===0?' er-dado--zero':''); if(r.v===r.hi) SFX.roar(.5); await sleep(260); }
     if(skipped) return;
-    if(d.has){ SFX.kick(); fillTo(A,d.val,scaleA); count(A.querySelector('.rv-count'),d.val,900); await sleep(1000); if(skipped) return;
-      if(d.goal){ setRes(A,d.barriga?'Gol de barriga!':'É gol!','ok'); A.classList.add('ok'); big(GRITO_CAT[d.cat]||pick(SHOUTS),'goal',`${esc(teamName())} ${d.my - (d.conc?0:0)} x ${d.op - (d.conc?1:0)}`); SFX.roar(1); }
-      else if(d.near){ setRes(A,'Na trave!','bad'); A.classList.add('bad'); SFX.uuh(); }
-      else { setRes(A,'A zaga corta','bad'); A.classList.add('bad'); SFX.uuh(.5); } }
+    if(d.has){ SFX.kick(); fillTo(A,d.val,scaleA); count(A.querySelector('.er-rv__conta'),d.val,900); await sleep(1000); if(skipped) return;
+      if(d.goal){
+        // categoria do lance (B02): Golaço ≥ 2× e Pintura ≥ 3× a zaga de antes do gol; gol de barriga é sempre Gol
+        const res = d.cat==='pintura' ? 'Que pintura!' : d.cat==='golaco' ? 'Golaço!' : d.barriga ? 'Gol de barriga!' : 'É gol!';
+        setRes(A,res,'ok');
+        const tipo = d.cat==='pintura' ? 'pintura' : d.cat==='golaco' ? 'golaco' : 'gol';
+        carimbo(tipo==='gol' ? (d.barriga?'Gol de barriga!':pick(SHOUTS)) : res, tipo, `${d.val} contra ${d.zaga}`, `${esc(teamName())} ${d.my} x ${d.op - (d.conc?1:0)} ${esc(opp)}`);
+        if(tipo==='golaco') tremer(4); if(tipo==='pintura') tremer(8);
+        SFX.roar(1); }
+      else if(d.near){ setRes(A,'Na trave!','frio'); SFX.uuh(); }
+      else { setRes(A,'A zaga corta','frio'); SFX.uuh(.5); } }
     else { setRes(A,'Você não atacou','idle'); }
     await sleep(d.goal?1100:650); if(skipped) return;
-    D.style.opacity='1';
-    if(d.intent){ fillTo(D,d.def,scaleD); count(D.querySelector('.rv-count'),d.def,800); await sleep(950); if(skipped) return;
-      if(d.conc){ setRes(D,`Gol do ${d.opp}`,'bad'); D.classList.add('bad'); big(`Gol do ${esc(d.opp)}`,'conc',`${esc(teamName())} ${d.my} x ${d.op}`); SFX.groan(); }
-      else { setRes(D,'Defendeu!','ok'); D.classList.add('ok'); if(!d.goal) big('Defendeu!','save',`Você segurou o ataque do ${esc(d.opp)}`); SFX.roar(.45); } }
-    else { setRes(D,'Sem perigo','idle'); if(!d.goal) big(d.near?'Na trave!':'Lance sem gols','none',''); }
+    D.classList.remove('er-rv__linha--espera');
+    if(d.intent){ fillTo(D,d.def,scaleD); count(D.querySelector('.er-rv__contad'),d.def,800); await sleep(950); if(skipped) return;
+      if(d.conc){ setRes(D,`Gol do ${d.opp}`,'mal'); carimbo(`Gol do ${esc(opp)}`,'sofrido',`${esc(d.star)} não perdoa`,`${esc(teamName())} ${d.my} x ${d.op} ${esc(opp)}`); SFX.groan(); }
+      else { setRes(D,'Defendeu!','ok'); if(!d.goal) carimbo('Defendeu!','defendeu',`você segurou o ataque do ${esc(opp)}`); SFX.roar(.45); } }
+    else { setRes(D,'Sem perigo','idle'); if(!d.goal) carimbo(d.near?'Na trave!':'Lance sem gols', d.near?'frio':'neutro', ''); }
     await sleep(1100); finish();
   })();
 }
@@ -1189,12 +1212,12 @@ var TUT={on:false,i:0,scrollTo:true};
 const TUT_STEPS=[
   {phase:'draft', sel:'#nameBox', title:'Dê um nome ao seu time', text:'Ele aparece no placar, na narração e no ranking. Pode tocar numa sugestão se quiser.'},
   {phase:'draft', sel:'#draftPicks', title:'Escolha seu craque', text:'Cada craque tem um efeito que vale a campanha inteira. Toque numa figurinha para contratar.', wait:'pick', waitTxt:'Toque numa figurinha para continuar'},
-  {phase:'match', sel:'.board', title:'O placar', text:'Cada jogo tem 6 lances de 15 minutos. A linha logo abaixo mostra o que aconteceu em cada lance.'},
+  {phase:'match', sel:'.pl-placar', title:'O placar', text:'Cada jogo tem 6 lances de 15 minutos. A linha logo abaixo mostra o que aconteceu em cada lance.'},
   {phase:'match', sel:'.pv-def', title:'Eles atacam', text:'É um duelo de números: à direita, em vermelho, a força do ataque deles; à esquerda, a sua defesa. Se o seu número for maior ou igual, você segura. Quando aparece Só tocando a bola, eles não atacam.'},
   {phase:'match', sel:'.pv-atk', title:'Você ataca', text:'Mesmo duelo no ataque: o seu número contra a zaga deles. Maior ou igual é gol. Combos multiplicam o ataque, e depois de cada gol a zaga deles fica mais forte.'},
   {phase:'match', sel:'#hand', title:'Escolha até 3 cartas', text:'Toque nas cartas e veja as barras mudarem. O número amarelo mostra a ordem da escolha.', wait:'select', waitTxt:'Selecione pelo menos uma carta'},
   {phase:'match', sel:'.dock', title:'Jogue o lance', text:'Toque em Jogar lance. Mão ruim? Trocar substitui as cartas selecionadas sem gastar o lance (3 por jogo).', wait:'play', waitTxt:'Toque em Jogar lance'},
-  {phase:'match', sel:'.timeline', title:'Pronto, você já sabe jogar', text:'O resultado aparece na linha do tempo e na narração. Vença os 4 jogos para ser campeão. Regras e combos ficam no botão Como jogar.', last:true}
+  {phase:'match', sel:'.tl-linha', title:'Pronto, você já sabe jogar', text:'O resultado aparece na linha do tempo e na narração. Vença os 4 jogos para ser campeão. Regras e combos ficam no botão Como jogar.', last:true}
 ];
 function tutDone(){ try{ localStorage.setItem('esquadrao-tutorial-feito','1'); }catch(e){} }
 function startTutorial(fresh){
