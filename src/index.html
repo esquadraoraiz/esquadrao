@@ -829,7 +829,15 @@ function riskVal(c, mode){
   if(mode==='roll' && M.rolls && M.rolls[c.id]!==undefined) return M.rolls[c.id];
   return Math.max(b.atk!==undefined?b.atk:b.def, f);
 }
-function rollRisk(c){ const b=CARDS[c.t], r=Math.random, f=riskFloor();
+/* Cartas de risco sorteiam pela semente da campanha. A chave inclui a fase, o lance e as cartas jogadas juntas:
+   todos que fazem a mesma jogada no mesmo lance tiram o mesmo valor (justo no desafio e reproduzível para validar o ranking),
+   mas mudar a jogada muda o sorteio, então não dá para "decorar" o resultado de uma carta. */
+function riskRngs(cards){
+  const base='risco'+G.stage+'-'+M.block+'-'+cards.map(c=>c.t).sort().join('+'), seen={};
+  // cada carta tem o próprio sorteio (tipo + ocorrência), para a ordem de escolha não trocar os valores entre cartas
+  return cards.map(c=>{ seen[c.t]=(seen[c.t]||0)+1; return rng(base+'|'+c.t+'#'+seen[c.t]); });
+}
+function rollRisk(c, r){ const b=CARDS[c.t], f=riskFloor(); r=r||Math.random;
   const one=()=> b.binary ? (r()<.5 ? b.hi : b.lo) : rri(r,b.lo,b.hi);
   let v=one(); if(hasK('riskBest')) v=Math.max(v,one()); return Math.max(v,f); }
 function baseAtk(c, mode){
@@ -1064,9 +1072,9 @@ function scorerName(){ return G.craques.length && R()<.7 ? pick(G.craques).n : p
 function playBlock(){
   if(REVEAL.busy) return;
   const cards=M.hand.filter(c=>M.sel.has(c.id)); if(!cards.length) return;
-  M.rolls={}; const rolls=[];
+  M.rolls={}; const rolls=[]; const rr=riskRngs(cards);
   cards.forEach((c,k)=>{ const b=CARDS[c.t]; if(!b.risk) return;
-    const v = rollRisk(c); M.rolls[c.id]=v; rolls.push({n:b.n, v, hi:Math.max(b.hi,riskFloor())}); });
+    const v = rollRisk(c, rr[k]); M.rolls[c.id]=v; rolls.push({n:b.n, v, hi:Math.max(b.hi,riskFloor())}); });
   const ev=evaluate(cards,'roll'); const min=BLOCKS[M.block].split('–')[1];
   const h={g:false,c:false};
   const rv={has:ev.hasAtk, val:ev.total, zaga:M.zaga, combo:ev.combo, rolls, intent:M.intent, def:ev.def, opp:M.t.n, star:M.t.star};
@@ -1137,10 +1145,17 @@ function renderPens(msg=''){
     </section>`;
   app.querySelectorAll('.goalframe button').forEach(b=>b.onclick=()=>kick(+b.dataset.i));
 }
+function penSig(){
+  const lances=M.hist.map(h=>(h&&h.g?1:0)+(h&&h.c?2:0)).join('');
+  const disputa=P.me.map(x=>x?1:0).join('')+'-'+P.op.map(x=>x?1:0).join('');
+  return `${M.my}x${M.op}|${lances}|${disputa}|${P.turn}`;
+}
 function kick(i){
   if(P.done) return;
-  // 3. sorteio sem semente: com semente, quem repete o desafio do dia decorava para onde o goleiro pula
-  const kr=Math.random; const r=kr(); const other = r<1/3?0:r<2/3?1:2;
+  // Pênaltis sorteiam pela semente, mas a chave inclui o histórico do jogo (placar, lance a lance) e da disputa até aqui.
+  // Assim a mesma partida dá os mesmos pênaltis (desafio justo, ranking validável), e quem repete o desafio só "decora"
+  // o goleiro se refizer exatamente o mesmo jogo. O canto escolhido não entra na chave, para não dar para testar cantos.
+  const kr=rng('pen'+G.stage+'|'+penSig()); const r=kr(); const other = r<1/3?0:r<2/3?1:2;
   const names=['à esquerda','no meio','à direita']; let msg='';
   if(P.turn==='me'){
     const ok = i!==other && (hasK('penSure') || kr()<.92); P.me.push(ok);
