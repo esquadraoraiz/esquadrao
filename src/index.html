@@ -462,6 +462,30 @@ button,.card,.craque{touch-action:manipulation;-webkit-tap-highlight-color:trans
   .side-n.range b{font-size:19px}
 }
 @media (max-width:360px){ .card .cname{font-size:13.5px;overflow-wrap:anywhere} }
+
+/* ===== Consentimento de dados (B01, D17) · tela nova, nasce no Framework visual (D3): tema Noite e tokens do design system ===== */
+.consent{--ds-superficie:#12241a;--ds-linha:#2e4b3a;--ds-linha-forte:#6e8b79;--ds-tinta:#eaf1e6;--ds-tinta-suave:#a3b8a8;
+  --ds-amarelo:#f5c430;--ds-amarelo-tinta:#2a2105;--ds-papel-tinta:#1b1a14;--ds-foco:#f5c430;
+  --ds-display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;--ds-texto:Figtree,system-ui,-apple-system,"Segoe UI",sans-serif;
+  position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:55;width:min(560px,100%);
+  background:var(--ds-superficie);color:var(--ds-tinta);border:2px solid var(--ds-linha);border-bottom:0;border-radius:16px 16px 0 0;
+  padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 28px rgba(0,0,0,.45);
+  font-family:var(--ds-texto);display:flex;flex-direction:column;gap:12px}
+.consent[hidden]{display:none}
+.consent p{margin:0;font-size:15px;line-height:1.4}
+.consent .c-atual{font-size:13px;color:var(--ds-tinta-suave)}
+.consent a{color:var(--ds-tinta-suave);text-decoration:underline;text-underline-offset:2px;white-space:nowrap}
+.consent .cbtns{display:flex;gap:8px}
+.consent .cbtns button{flex:1 1 0;appearance:none;font:900 18px/1 var(--ds-display);letter-spacing:.06em;text-transform:uppercase;border-radius:6px;
+  padding:12px 16px;min-height:48px;border:2px solid var(--ds-papel-tinta);box-shadow:0 4px 0 var(--ds-papel-tinta);transition:transform .08s,box-shadow .08s}
+.consent .cbtns button:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ds-papel-tinta)}
+.consent .c-ok{background:var(--ds-amarelo);color:var(--ds-amarelo-tinta)}
+.consent .cbtns .c-nao{background:var(--ds-superficie);color:var(--ds-tinta);border-color:var(--ds-linha-forte);box-shadow:0 4px 0 var(--ds-linha-forte)}
+.consent .cbtns .c-nao:active{box-shadow:0 1px 0 var(--ds-linha-forte)}
+.consent button:focus-visible,.consent a:focus-visible{outline:3px solid var(--ds-foco);outline-offset:2px}
+body.has-consent{padding-bottom:calc(48px + var(--consent-h,0px))}
+body.has-consent .dock{bottom:var(--consent-h,0px)}
+.linkbtn{background:none;border:0;padding:0;color:inherit;font-size:inherit;text-decoration:underline;text-underline-offset:2px}
 </style>
 
 <div class="wrap">
@@ -569,13 +593,60 @@ button,.card,.craque{touch-action:manipulation;-webkit-tap-highlight-color:trans
       <div id="rankBody"></div>
     </div>
   </div>
-  <footer>Protótipo de fã, sem afiliação com clubes, atletas ou com a CBF. Nomes usados apenas como referência histórica. Uso pessoal.</footer>
+  <footer>Protótipo de fã, sem afiliação com clubes, atletas ou com a CBF. Nomes usados apenas como referência histórica. Uso pessoal. · <button class="linkbtn" id="prefDados" type="button">Preferências de dados</button></footer>
+</div>
+<div class="consent" id="consent" hidden role="region" aria-label="Consentimento de dados de uso">
+  <p>Usamos dados de uso para melhorar o jogo. <a href="#privacidade">Privacidade</a></p>
+  <p class="c-atual" id="consentAtual" hidden></p>
+  <div class="cbtns"><button class="c-ok" id="consentOk" type="button">Ok</button><button class="c-nao" id="consentNao" type="button">Não</button></div>
 </div>
 
 <script src="/motor.js"></script>
 <script>
 /* Compatibilidade com celulares antigos (iOS < 15.4, Chrome < 92) */
 if(!Array.prototype.at){ Object.defineProperty(Array.prototype,'at',{value:function(n){ n=Math.trunc(n)||0; if(n<0) n+=this.length; return (n<0||n>=this.length)?undefined:this[n]; },writable:true,configurable:true}); }
+/* ===================== MEDIÇÃO (B01) =====================
+   Google Analytics só depois do Ok do banner (D17). Sem resposta, os eventos ficam numa fila em memória;
+   com Ok, a fila é enviada; com Não, é descartada e nenhum script do Google carrega. O motor não manda evento. */
+const Medir=(function(){
+  const ID='G-T0THBVKCKH', CHAVE='esquadrao-consentimento', T0=Date.now();
+  let fila=[], carregado=false;
+  const escolha=()=>{ try{ return localStorage.getItem(CHAVE); }catch(e){ return null; } };
+  const guardar=v=>{ try{ localStorage.setItem(CHAVE,v); }catch(e){} };
+  function ligar(){
+    window['ga-disable-'+ID]=false;
+    if(carregado) return; carregado=true;
+    window.dataLayer=window.dataLayer||[]; window.gtag=function(){ window.dataLayer.push(arguments); };
+    const cfg={anonymize_ip:true, allow_google_signals:false, allow_ad_personalization_signals:false};
+    if(/[?&]ga_debug=1\b/.test(location.search)) cfg.debug_mode=true; // para conferir no DebugView
+    window.gtag('js', new Date()); window.gtag('config', ID, cfg);
+    const sc=document.createElement('script'); sc.async=true; sc.src='https://www.googletagmanager.com/gtag/js?id='+ID; document.head.appendChild(sc);
+  }
+  function desligar(){
+    window['ga-disable-'+ID]=true; fila=[];
+    // apaga os cookies do Analytics, se a pessoa tinha aceitado antes
+    const host=location.hostname, doms=['', host, '.'+host, '.'+host.split('.').slice(-2).join('.')];
+    document.cookie.split(';').map(c=>c.split('=')[0].trim()).filter(n=>/^_ga/.test(n)).forEach(n=>doms.forEach(d=>{
+      document.cookie=`${n}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/${d?'; domain='+d:''}`; }));
+  }
+  function evento(nome, params){
+    const c=escolha(), p=params||{};
+    if(c==='sim'){ ligar(); window.gtag('event', nome, p); }
+    else if(c!=='nao'){ fila.push([nome,p]); if(fila.length>100) fila.shift(); }
+  }
+  function decidir(v){
+    guardar(v);
+    if(v==='sim'){ ligar(); fila.forEach(([n,p])=>window.gtag('event',n,p)); fila=[]; } else desligar();
+  }
+  function segundos(){ return Math.round((Date.now()-T0)/1000); }
+  return {escolha, decidir, evento, segundos, ligarSeAceito(){ if(escolha()==='sim') ligar(); }};
+})();
+function primeiroGol(){
+  let ja=false; try{ ja=localStorage.getItem('esquadrao-primeiro-gol')==='1'; localStorage.setItem('esquadrao-primeiro-gol','1'); }catch(e){ ja=true; }
+  if(!ja) Medir.evento('primeiro_gol', {segundos_desde_inicio: Medir.segundos()});
+}
+const FASE_MEDIDA=['primeira_fase','quartas','semifinal','final'];
+
 /* ===================== DADOS ===================== */
 /* Regra, dados e sorteio com semente vivem em motor.js (objeto Motor). Aqui fica só o que é da tela. */
 const {CARDS, CRAQUES, RAR} = Motor;
@@ -690,6 +761,7 @@ function showDraft(){
   app.querySelectorAll('.craque.pick').forEach(el=>el.onclick=()=>{
     setName(inp.value);
     const c=CRAQUES.find(c=>c.id===el.dataset.id); Motor.contratar(G, c);
+    Medir.evento('campanha_inicio', {tipo: G.daily ? 'desafio_do_dia' : G.challenge ? 'duelo' : 'normal'});
     if(G.daily && !G.pastDaily && !G.practice) markDaily(G.seed);
     startMatch(); tutEvent('pick');
   });
@@ -911,6 +983,7 @@ function playBlock(){
   }
   if(L.cera) M.log.push({m:min, txt:'Muita cera. O juiz olha o relógio.'});
   if(L.pressao) M.log.push({m:min, txt:'Pressão alta: roubou a bola lá na frente. Próximo lance +3.'});
+  if(ev.hasAtk){ Medir.evento('lance', {categoria: h.g ? 'gol' : 'sem_gol'}); if(h.g) primeiroGol(); }
   rv.goal=h.g; rv.barriga=barriga; rv.conc=h.c; rv.my=M.my; rv.op=M.op; rv.near=L.trave;
   M.bump = {g:h.g, c:h.c};
   runReveal(rv, ()=>{
@@ -1014,6 +1087,8 @@ function runOver(champ){
   hdr();
   const t=M.t, wins=G.results.filter(r=>r.win).length, isChamp=wins>=4, canEndless = champ && !G.endless;
   const share=shareText();
+  if(!G.fimMedido){ G.fimMedido=true; const sc=runScore();
+    Medir.evento('campanha_fim', {resultado: isChamp?'campeao':'eliminado', fase: G.stage<4 ? FASE_MEDIDA[G.stage] : 'sem_fim', gols_pro: sc.gf, gols_contra: sc.ga, pontos: sc.score}); }
   const title = canEndless ? 'É campeão!' : G.endless ? (wins>=6 ? 'Lenda!' : 'Campeão!') : 'Fim da linha';
   const lede = canEndless ? `O ${esc(teamName())} bateu o ${esc(t.n)} na final. ${esc(t.f)} Quer continuar? No modo sem fim, a zaga e o ataque deles crescem a cada jogo.`
     : G.endless ? `Campeão e mais ${wins-4} vitória${wins-4===1?'':'s'} no modo sem fim, até cair para o ${esc(t.n)}.`
@@ -1055,7 +1130,9 @@ function runOver(champ){
   if(eb) eb.onclick=()=>{ G.endless=true; G.stage=4; hdr(); showShop(G.lastPrize||0, G.results.at(-1).score); scrollTo(0,0); };
   document.getElementById('again').onclick=()=>{ try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){} newRun(); scrollTo(0,0); };
   if(rankEnabled()) showChallengeBoard(document.getElementById('chalEnd'), G.seed, teamName());
+  document.getElementById('invWa').addEventListener('click',()=>Medir.evento('compartilhar', {onde:'resultado'}));
   document.getElementById('copy').onclick=()=>{
+    Medir.evento('compartilhar', {onde:'resultado'});
     const ta=document.getElementById('share'); const share=shareText(); ta.value=share;
     try{ navigator.clipboard.writeText(share).then(()=>{document.getElementById('ok').hidden=false;}).catch(()=>ta.select()); }catch(e){ ta.select(); }
   };
@@ -1231,6 +1308,27 @@ document.getElementById('howClose').onclick=closeGuide;
 document.getElementById('howGo').onclick=closeGuide;
 guideEl.addEventListener('click',e=>{ if(e.target===guideEl) closeGuide(); });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape' && !guideEl.hidden) closeGuide(); });
+/* ===================== CONSENTIMENTO (B01, D17) ===================== */
+const consentEl=document.getElementById('consent');
+let consentReturn=null;
+function consentAltura(){ document.documentElement.style.setProperty('--consent-h', consentEl.hidden ? '0px' : consentEl.offsetHeight+'px'); }
+function abrirConsent(foco){
+  const c=Medir.escolha(), at=document.getElementById('consentAtual');
+  at.hidden = !c; at.textContent = c==='sim' ? 'Sua escolha atual: Ok.' : c==='nao' ? 'Sua escolha atual: Não.' : '';
+  consentEl.hidden=false; document.body.classList.add('has-consent'); consentAltura();
+  if(foco){ consentReturn=document.activeElement; document.getElementById('consentOk').focus(); }
+}
+function fecharConsent(v){
+  Medir.decidir(v); consentEl.hidden=true; document.body.classList.remove('has-consent'); consentAltura();
+  if(consentReturn && consentReturn.focus){ consentReturn.focus(); consentReturn=null; }
+}
+document.getElementById('consentOk').onclick=()=>fecharConsent('sim');
+document.getElementById('consentNao').onclick=()=>fecharConsent('nao');
+document.getElementById('prefDados').onclick=()=>abrirConsent(true);
+addEventListener('resize', ()=>{ if(!consentEl.hidden) consentAltura(); });
+if(!Medir.escolha()) abrirConsent(false); else Medir.ligarSeAceito();
+{ const sd=cleanSeed((location.hash||'').match(/^#d-([a-z0-9]+)$/i)?.[1]);
+  Medir.evento('sessao_inicio', {desafio_do_dia: isDaily(sd)?'sim':'nao', via_link: sd?'sim':'nao'}); }
 newRun(cleanSeed((location.hash||'').match(/^#d-([a-z0-9]+)$/i)?.[1]));
 addEventListener('hashchange',()=>{ const sd=cleanSeed((location.hash||'').match(/^#d-([a-z0-9]+)$/i)?.[1]); if(sd && (!G || G.seed!==sd)){ newRun(sd); scrollTo(0,0); } });
 
